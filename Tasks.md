@@ -9,3 +9,9 @@
 * How to program chart-reading
 * How to test chart-reading
 * Create tests
+
+
+Branches
+* image_reader
+* chart_area
+* chart_reader
