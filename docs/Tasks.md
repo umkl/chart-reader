@@ -10,7 +10,6 @@
 * How to test chart-reading
 * Create tests
 
-
 Branches
 * image_reader
 * chart_area
