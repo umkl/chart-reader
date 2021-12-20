@@ -1,7 +1,5 @@
 from chartreader.reader import Reader
 
-
-
 # calculating the values using the 
 # * reader
 # * xaxis
@@ -12,5 +10,7 @@ from chartreader.reader import Reader
 def main():
     reader = Reader()
     print(reader.imagePath)
+    print('ob')
 
-main()
+if __name__ == "__main__":
+    main()
