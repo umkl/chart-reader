@@ -30,7 +30,7 @@
 | UNGAR    | Umsetzung in python|errors im code|
 
 
-## Woche 6.12.2021
+## Woche 20.12.2021
 
 | WER      | MACHT            | PROBLEME |
 |----------|------------------|----------|
@@ -38,4 +38,4 @@
 | NEIßL    | y-Achse |    -     |
 | SEIFRIED | Logarithmus |    -     |
 | KAGERER  | Logarithmus | - |
-| UNGAR    | Chart |errors im code
+| UNGAR    | Chart | - | 
