@@ -39,3 +39,36 @@
 | SEIFRIED | Logarithmus |    -     |
 | KAGERER  | Logarithmus | - |
 | UNGAR    | Chart | - | 
+
+
+
+## Woche 10.1.2021
+
+| WER      | MACHT            | PROBLEME |
+|----------|------------------|----------|
+| EINBOEK  | x-Achse + github repo |    -     |
+| NEIßL    | y-Achse |    -     |
+| SEIFRIED | Logarithmus |    -     |
+| KAGERER  | Logarithmus | - |
+| UNGAR    | Chart | - | 
+
+
+## Woche 17.1.2021
+
+| WER      | MACHT            | PROBLEME |
+|----------|------------------|----------|
+| EINBOEK  | x-Achse |    -     |
+| NEIßL    | y-Achse |    -     |
+| SEIFRIED | Logarithmus |    -     |
+| KAGERER  | Logarithmus | - |
+| UNGAR    | Chart - Lesen des Graphes durch Auswertung der Pixelwerte | - | 
+
+## Woche 24.1.2021
+
+| WER      | MACHT            | PROBLEME |
+|----------|------------------|----------|
+| EINBOEK  | x-Achse auslesen |    -     |
+| NEIßL    | y-Achse auslesen |    -     |
+| SEIFRIED | Logarithmus |    -     |
+| KAGERER  | Logarithmus | - |
+| UNGAR    | Chart - Lesen des Graphes durch Auswertung der Pixelwerte | - | 
