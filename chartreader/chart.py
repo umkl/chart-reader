@@ -17,17 +17,13 @@ def sumOfArray(inputar):
         arr += i
     return arr
 
-
 class Chart:
 
     def __init__(self,bValues):
         self.bValues = bValues
 
-    def loadImageIntoPixels(self, url):
+    def loadImageIntoPixelAr(self, url):
         img = cv.imread('./input/1.png')
-        # cv2.imshow('image',img)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
         self.ar = img
     
     def readTheBluestValue(imgCol):
@@ -36,23 +32,15 @@ class Chart:
         closestVicinity = 765
         closestIndex = 0
         for index in range(len(imgCol)):
-            # print(sumOfArray(getColorProximity(blue,imgCol[index])))
-            # if(blue == blue):
-                # print(imgCol[index])
-                # print(blue)
-            # # print(getColorProximity(blue,imgCol[index]))
             vicinity = sumOfArray(getColorProximity(blue,imgCol[index]))#color irrelevant
             if(vicinity < closestVicinity):
-                print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
                 closestVicinity = vicinity
                 closestIndex = index
         return closestVicinity, closestIndex
-        # return [1,2]
 
     def readTheDarkestValue(row):#input: [r,g,b]
         brightest = 255 + 255 + 255
         brightestIndex = [255,255,255]
-        # print(row)
         for i in row:
             if(sumOfArray(i) > brightest):
                 brightest = sumOfArray(i)
