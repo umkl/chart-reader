@@ -14,8 +14,9 @@ def init():
     global chart; chart = Chart(img)
 
 def main():
-    init()
-    present()
+    # init()
+    print(getLinearFunctionFromCoo([100,120],[101, 130]))
+    # present()
 
 def evaluate(img):
     print("ok")
@@ -30,13 +31,13 @@ def present():
     for val in chart.pixelCoordinates:
         # print(val)
         img[val[0], val[1]] = [255,150,180]
-    print(chart.pixelCoordinates)
+    # print(chart.pixelCoordinates)
     cv.imshow('img 1',img)
     # print(img[343,160])
     cv.waitKey(0)
 
 def drawByAvg():
-    op = sumOfArray(getColorProximity([51,102,204],[51,102,204]))
+    op = sum(getColorProximity([51,102,204],[51,102,204]))
     for colIndex in range(CHARTSTARTX, CHARTSTARTY):
         n, i, d = Chart.readTheBluestValue(img[:,colIndex])
         avg = sum(d) / len(d)
