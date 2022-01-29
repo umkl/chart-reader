@@ -35,6 +35,7 @@ class Chart:
         blue = [204,102,51] # b g r 
         closestVicinity = 765
         closestIndex = 0
+        closestIndexes = []
         for index in range(len(imgCol)):
             # print(sumOfArray(getColorProximity(blue,imgCol[index])))
             # if(blue == blue):
@@ -44,9 +45,13 @@ class Chart:
             vicinity = sumOfArray(getColorProximity(blue,imgCol[index]))#color irrelevant
             if(vicinity < closestVicinity):
                 print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
+                if(vicinity == closestIndex or vicinity == 0):
+                    closestIndexes.append(index)
                 closestVicinity = vicinity
                 closestIndex = index
-        return closestVicinity, closestIndex
+                
+                    
+        return closestVicinity, closestIndex, closestIndexes
         # return [1,2]
 
     def readTheDarkestValue(row):#input: [r,g,b]

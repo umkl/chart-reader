@@ -23,10 +23,12 @@ def test1():
     # op = sumOfArray(getColorProximity([51,102,204],[51,102,204]))
     # print(op)
     
-    n, i = Chart.readTheBluestValue(img[:,130])
+    n, i, d = Chart.readTheBluestValue(img[:,130])
     print(n,i)
-    img[i,130] = [150,120,200] # img [y,x]
-    print(img[290,130])
+    print(d)
+    for index in d:
+        img[index,130] = [150,120,200] # img [y,x]
+    
     cv.imshow('test1',img)
     cv.waitKey(0)
 
