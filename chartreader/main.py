@@ -11,9 +11,9 @@ def init():
     global chart; chart = Chart(img)
 
 def main():
-    # init()
-    print(getLinearFunctionFromCoo([100,120],[101, 130]))
-    # present()
+    init()
+    # print(getLinearFunctionFromCoo([100,120],[101, 130]))
+    present()
 
 def evaluate(img):
     return 0
