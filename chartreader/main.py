@@ -11,29 +11,28 @@ YINDENTTOP=94
 
 def init():
     global img; img = cv.imread(INPUTFILE)
-    global chart
-
-    # chart = Chart(img)
+    global chart; chart = Chart(img)
 
 def main():
     init()
-    present(img)
+    present()
 
-    
 def evaluate(img):
     print("ok")
-
-
     # img[150:200,10:100] = [255,100,250]
     # cv.imshow('ex1',img)
     # getPointArrayOnFunction(0.1, 10, xPoint2,yPoint1, yPoint2)
     # values = Reader.loadImageIntoPixels('./input/1.png')
     # res = Chart.readTheDarkestValue(values[132])
 
-def present(img):    
+def present():    
     # cv.line(img,(0,0),(511,511),(255,0,0),5)
-    cv.imshow('1.jpg',img)
-    print(img[343,160])
+    for val in chart.pixelCoordinates:
+        # print(val)
+        img[val[0], val[1]] = [255,150,180]
+    print(chart.pixelCoordinates)
+    cv.imshow('img 1',img)
+    # print(img[343,160])
     cv.waitKey(0)
 
 def drawByAvg():
