@@ -17,11 +17,13 @@ class Chart:
 
     def readTheDarkestValue(row):#input: [r,g,b]
         brightest = 255 + 255 + 255
+        brightestIndex = [255,255,255]
         # print(row)
         for i in row:
-            # if sumOfArray(i) > brightest:
-            brightest = sumOfArray(i)
-        return brightest
+            if(sumOfArray(i) > brightest):
+                brightest = sumOfArray(i)
+                brightestIndex = i
+        return brightestIndex
 
     def getPath():#input: [[r,g,b]]
         return [1,2,3]
@@ -29,7 +31,8 @@ class Chart:
 def sumOfArray(inputar):
     arr = 0
     for i in inputar:
-        arr += inputar[i-1]
+        arr += i
+    return arr
 
     # img = cv.imread('input/1.png',1)
     # # print(img.shape)

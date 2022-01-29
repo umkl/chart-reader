@@ -10,16 +10,32 @@ from chart import Chart
 import numpy as np
 import cv2 as cv
 
-def presi():
+def init():
+    global img
     img = cv.imread('./input/1.png')
-    cv.imshow('1.jpg',img)
-    print(img[343,160])
+
+def test1():
+    cv.imshow('ex1',img)
     cv.waitKey(0)
+    # img.putpixel((30,60),(155,255,155))
+    # cv.imshow('chucksl',img)
+    # cv.waitKey(0)
+    # values = Reader.loadImageIntoPixels('./input/1.png')
+    # res = Chart.readTheDarkestValue(values[132])
+    # print(res)
+    # img.dr
+    # presi()
+
+# def presi(img):    
+#     # cv.line(img,(0,0),(511,511),(255,0,0),5)
+#     cv.imshow('1.jpg',img)
+#     print(img[343,160])
+#     cv.waitKey(0)
 
 def main():
-    values = Reader.loadImageIntoPixels('./input/1.png')
-    res = Chart.readTheDarkestValue(values[10])
-    print(res)
+    init()
+    test1()
+    
 
 if __name__ == "__main__":
     main()
