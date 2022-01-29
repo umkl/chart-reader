@@ -67,8 +67,8 @@
 
 | WER      | MACHT            | PROBLEME |
 |----------|------------------|----------|
-| EINBOEK  | x-Achse auslesen |    -     |
-| NEIßL    | y-Achse auslesen |    -     |
-| SEIFRIED | Logarithmus |    -     |
+| EINBOEK  | x-Achse auslesen - Logik für DateAxis-class |    -     |
+| NEIßL    | y-Achse auslesen - Logik für LogAxis-class|    -     |
+| SEIFRIED | Logarithmus | -|
 | KAGERER  | Logarithmus | - |
-| UNGAR    | Chart - Lesen des Graphes durch Auswertung der Pixelwerte | - | 
+| UNGAR    | Chart - Lesen des Graphes durch Auswertung der Pixelwerte, Stub für x-axis und y-axis, Folder-structure updates, Parabelberechnung für genauere Auswertung der Pixelwerte, Klasse für die Anwendung der Ergebniswerte | Lineares Gleichungssystem für die genaue Evaluierung der Werte zwischen den Pixelpunkte - behoben durch sympy, Ungenaue Messung der Werte im Graph aufgrund der Extrahierung der Punkte durch Durchschnitt | 
