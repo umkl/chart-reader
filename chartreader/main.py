@@ -1,20 +1,19 @@
-# calculating the values using the 
-# * reader
-# * xaxis
-# * yaxis
-# * chart
-# classes
+# chart-v3 
+# * using average
+# * creating f(x) for precise values
 
 from reader import Reader
 from chart import *
 import numpy as np
 import cv2 as cv
 
-
+CHARTSTARTX=122+1
+CHARTSTARTY=1231
+INPUTFILE='./input/1.png'
 
 def init():
     global img
-    img = cv.imread('./input/1.png')
+    img = cv.imread(INPUTFILE)
 
 def test1():
     # img[150:200,10:100] = [255,100,250]
@@ -22,12 +21,15 @@ def test1():
 
     # op = sumOfArray(getColorProximity([51,102,204],[51,102,204]))
     # print(op)
-    for colIndex in range(200, 300):
+    for colIndex in range(CHARTSTARTX, CHARTSTARTY):
         n, i, d = Chart.readTheBluestValue(img[:,colIndex])
         # print(n,i)
-        print(d)
-        for index in d:
-            img[index,colIndex] = [150,120,200] # img [y,x]
+        # print(d)
+        avg = sum(d) / len(d)
+        # print(round(avg))
+        img[round(avg),colIndex] = [150,120,200]
+        # for index in d:
+        #     img[index,colIndex] = [150,120,200] # img [y,x]
         
     cv.imshow('test1',img)
     cv.waitKey(0)
@@ -50,6 +52,7 @@ def test1():
 #     cv.waitKey(0)
 
 def main():
+    
     init()
     test1()
     

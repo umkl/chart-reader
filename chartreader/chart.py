@@ -5,6 +5,7 @@ import cv2 as cv
 
 global getColorProximity
 global sumOfArray
+global linearPitchFunction
 
 def getColorProximity(colorA, colorB):#+ rgb
     [rA,gA,bA] = colorA
@@ -16,6 +17,9 @@ def sumOfArray(inputar):
     for i in inputar:
         arr += i
     return arr
+
+def linearPitchFunction(x,k): # f(x)=k*x+d
+        return k*x
 
 
 class Chart:
@@ -43,7 +47,7 @@ class Chart:
                 # print(blue)
             # # print(getColorProximity(blue,imgCol[index]))
             vicinity = sumOfArray(getColorProximity(blue,imgCol[index]))#color irrelevant
-            if(vicinity == closestIndex or vicinity < 10):
+            if(vicinity < 10):
                     closestIndexes.append(index)
             if(vicinity < closestVicinity):
                 # print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
@@ -66,8 +70,14 @@ class Chart:
 
     def getPath():#input: [[r,g,b]]
         return [1,2,3]
+    
+    
 
-
+    def getPointArrayOnFunction(size, xPoint1, xPoint2):
+        pitch = xPoint1-xPoint2
+        points = []
+        for i in range(size):
+            points.append(linearPitchFunction(i,pitch))
 
     # img = cv.imread('input/1.png',1)
     # # print(img.shape)
