@@ -1,7 +1,25 @@
-from re import A
+from fileinput import close
+from re import A, I
+import numpy as np
 import cv2 as cv
 
+global getColorProximity
+global sumOfArray
+
+def getColorProximity(colorA, colorB):#+ rgb
+    [rA,gA,bA] = colorA
+    [rB,gB,bB] = colorB
+    return np.abs(np.array([rA-rB, gA-gB, bA-bB]))
+
+def sumOfArray(inputar):
+    arr = 0
+    for i in inputar:
+        arr += i
+    return arr
+
+
 class Chart:
+
     def __init__(self,bValues):
         self.bValues = bValues
 
@@ -12,8 +30,24 @@ class Chart:
         # cv2.destroyAllWindows()
         self.ar = img
     
-    def readTheBluestValue(img):
-        return 0
+    def readTheBluestValue(imgCol):
+        # 3366cc - r: 51, g: 102, b: 204
+        blue = [204,102,51] # b g r 
+        closestVicinity = 765
+        closestIndex = 0
+        for index in range(len(imgCol)):
+            # print(sumOfArray(getColorProximity(blue,imgCol[index])))
+            # if(blue == blue):
+                # print(imgCol[index])
+                # print(blue)
+            # # print(getColorProximity(blue,imgCol[index]))
+            vicinity = sumOfArray(getColorProximity(blue,imgCol[index]))#color irrelevant
+            if(vicinity < closestVicinity):
+                print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
+                closestVicinity = vicinity
+                closestIndex = index
+        return closestVicinity, closestIndex
+        # return [1,2]
 
     def readTheDarkestValue(row):#input: [r,g,b]
         brightest = 255 + 255 + 255
@@ -28,11 +62,7 @@ class Chart:
     def getPath():#input: [[r,g,b]]
         return [1,2,3]
 
-def sumOfArray(inputar):
-    arr = 0
-    for i in inputar:
-        arr += i
-    return arr
+
 
     # img = cv.imread('input/1.png',1)
     # # print(img.shape)
