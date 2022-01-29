@@ -6,6 +6,7 @@ import cv2 as cv
 global getColorProximity
 global sumOfArray
 global linearPitchFunction
+global getPointArrayOnFunction
 
 def getColorProximity(colorA, colorB):#+ rgb
     [rA,gA,bA] = colorA
@@ -23,61 +24,56 @@ def linearPitchFunction(x,k): # f(x)=k*x+d
 
 
 class Chart:
+    global BLUE; BLUE = [204,102,51] # b g r 
+    global CHARTSTARTX; CHARTSTARTX=122+1
+    global CHARTSTARTY; CHARTSTARTY=1231
 
-    def __init__(self,bValues):
-        self.bValues = bValues
-
-    def loadImageIntoPixels(self, url):
-        img = cv.imread('./input/1.png')
-        # cv2.imshow('image',img)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-        self.ar = img
+    def __init__(self,img):
+        # self.__img = img
+        self.coordiantes = []
+        self.initCoordinates(img)
+    def setcoordinates(self, coordinates):
+        self.__coordinates = coordinates
+    def getcoordinates(self):
+        return self.__coordinates
+    def delcoordinates(self):
+        del self.__coordinates
+    coordiantes=property(getcoordinates, setcoordinates, delcoordinates)
     
-    def readTheBluestValue(imgCol):
+    def initCoordinates(self,img):
+        for column in range(len(img)):
+            xCoordinate = self.retrieveTheBluestValueFromColumn(img[column])
+            self.coordiantes.append([xCoordinate, column])
+            
+    def retrieveTheBluestValueFromColumn(self, imgCol):
         # 3366cc - r: 51, g: 102, b: 204
-        blue = [204,102,51] # b g r 
         closestVicinity = 765
         closestIndex = 0
         closestIndexes = []
-        for index in range(len(imgCol)):
+        for index in range(CHARTSTARTX, CHARTSTARTY):
             # print(sumOfArray(getColorProximity(blue,imgCol[index])))
             # if(blue == blue):
-                # print(imgCol[index])
-                # print(blue)
+            # print(imgCol[index])
+            # print(blue)
             # # print(getColorProximity(blue,imgCol[index]))
-            vicinity = sumOfArray(getColorProximity(blue,imgCol[index]))#color irrelevant
+            vicinity = sumOfArray(getColorProximity(BLUE,imgCol[index]))#color irrelevant
             if(vicinity < 10):
                     closestIndexes.append(index)
             if(vicinity < closestVicinity):
+                closestIndexes.append(index)
                 # print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
                 closestVicinity = vicinity
-                closestIndex = index
-                
-                    
-        return closestVicinity, closestIndex, closestIndexes
-        # return [1,2]
+                closestIndex = index                                    
+        return np.abs(sum(closestIndexes)/len(closestIndexes))
 
-    def readTheDarkestValue(row):#input: [r,g,b]
-        brightest = 255 + 255 + 255
-        brightestIndex = [255,255,255]
-        # print(row)
-        for i in row:
-            if(sumOfArray(i) > brightest):
-                brightest = sumOfArray(i)
-                brightestIndex = i
-        return brightestIndex
-
-    def getPath():#input: [[r,g,b]]
-        return [1,2,3]
-    
-    
-
-    def getPointArrayOnFunction(size, xPoint1, xPoint2):
-        pitch = xPoint1-xPoint2
-        points = []
-        for i in range(size):
-            points.append(linearPitchFunction(i,pitch))
+def getPointArrayOnFunction( occ, xPoint1, xPoint2,yPoint1, yPoint2):##get coordinates of fractions between two pixels/points
+    pitch = yPoint1-yPoint2
+    points = []
+    xVal = 0
+    while xVal < xPoint2-xPoint1:
+        points.append(linearPitchFunction(xVal,pitch))
+        xVal+=occ
+    return points
 
     # img = cv.imread('input/1.png',1)
     # # print(img.shape)
@@ -95,8 +91,6 @@ class Chart:
     #             print("black")
     #         # k = img[1,j,2]
     #         # print(k)
-
-
     # print(cols)
     # print(img[124,309])
     # for i in range(cols):
