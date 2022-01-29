@@ -1,3 +1,5 @@
+from const import * 
+
 class LogAxis:
     def __init__(self, img):
         self.__img = img

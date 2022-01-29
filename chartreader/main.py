@@ -1,13 +1,10 @@
 from reader import Reader
 from chart import *
+from const import *
+
 import numpy as np
 import cv2 as cv
 import sympy as sy
-
-INPUTFILE='./input/1.png'
-XINDENT=102
-YINDENT=648
-YINDENTTOP=94
 
 def init():
     global img; img = cv.imread(INPUTFILE)
@@ -19,7 +16,7 @@ def main():
     # present()
 
 def evaluate(img):
-    print("ok")
+    return 0
     # img[150:200,10:100] = [255,100,250]
     # cv.imshow('ex1',img)
     # getPointArrayOnFunction(0.1, 10, xPoint2,yPoint1, yPoint2)

@@ -1,3 +1,5 @@
+from const import * 
+
 class DateAxis:
     def __init__(self, img):
         self.__img = img

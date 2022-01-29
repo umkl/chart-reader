@@ -1,5 +1,6 @@
 from fileinput import close
 from re import A, I
+from const import * 
 import numpy as np
 import cv2 as cv
 import sympy as sy
@@ -37,9 +38,7 @@ def getPointArrayOnFunction( occ, xPoint1, xPoint2,yPoint1, yPoint2):##get coord
     return points
 
 class Chart:
-    global BLUE; BLUE = [204,102,51] # b g r - 3366cc - r: 51, g: 102, b: 204
-    global CHARTSTARTX; CHARTSTARTX=122+1
-    global CHARTSTARTY; CHARTSTARTY=1231
+    
 
     def __init__(self,img):
         # self.__img = img
