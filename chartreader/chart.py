@@ -43,10 +43,10 @@ class Chart:
                 # print(blue)
             # # print(getColorProximity(blue,imgCol[index]))
             vicinity = sumOfArray(getColorProximity(blue,imgCol[index]))#color irrelevant
-            if(vicinity < closestVicinity):
-                print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
-                if(vicinity == closestIndex or vicinity == 0):
+            if(vicinity == closestIndex or vicinity < 10):
                     closestIndexes.append(index)
+            if(vicinity < closestVicinity):
+                # print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
                 closestVicinity = vicinity
                 closestIndex = index
                 
