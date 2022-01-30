@@ -7,4 +7,6 @@ class Result:
         self.__logAxis = LogAxis
         
     def logToCsv(self):
-        print("log not implemented")
+        for value in self.__dateAxis.values():
+            print("log not implemented")
+    

@@ -5,7 +5,7 @@ import numpy as np
 import cv2 as cv
 import sympy as sy
 
-global linearPitchFunction, getPointArrayOnFunction, getColorProximity, getLinearFunctionFromCoo # sumOfArray
+global getFragValuesBetween, linearPitchFunction, getPointArrayOnFunction, getColorProximity, getLinearFunctionFromCoo # sumOfArray
 def getColorProximity(colorA, colorB):#+ rgb
     [rA,gA,bA] = colorA
     [rB,gB,bB] = colorB
@@ -18,6 +18,17 @@ def getLinearFunctionFromCoo(cooP1, cooP2): # cooP1[x,y], cooP2[x,y] # https://w
         sy.Eq(cooP2[0]*k+d, cooP2[1]),
     ]
     return sy.solve(equations)
+
+def getFragValuesBetween(occ,pointAX, pointBX,pointAY,pointBY): #pixelA[x,y],pixelB[x,y]
+    distance = np.abs(pointBX - pointAX)
+    itr = 0 # iterator for each fragment between points 
+    k, d = getLinearFunctionFromCoo([pointAX, pointAY],[pointBX, pointBY])
+    preciseValuesBetween = []
+    while itr < distance:
+        pointAYonNewFragment = k * (pointAX + itr) + d # increasing pointAX by the fragment iterator and using this new xvalue with       
+        preciseValuesBetween.append([pointAX, pointAYonNewFragment])
+        itr = itr + occ
+    return preciseValuesBetween
 
 # def sumOfArray(inputar):
 #     arr = 0
@@ -38,8 +49,6 @@ def getPointArrayOnFunction( occ, xPoint1, xPoint2,yPoint1, yPoint2):##get coord
     return points
 
 class Chart:
-    
-
     def __init__(self,img):
         # self.__img = img
         self.__pixelCoordinates =[]
@@ -52,6 +61,7 @@ class Chart:
     def delcoordinates(self):
         del self.__coordinates
     coordinates=property(getcoordinates, setcoordinates, delcoordinates)
+
     def setPixelCoordinates(self, pixelCoordinates):
         self.__pixelCoordinates = pixelCoordinates
     def getPixelCoordinates(self):
@@ -77,13 +87,16 @@ class Chart:
     def updateCoordinatesAccordingPixelCoordinates(self):
         self.coordinates = [1,1,1]
 
-    def getLinearFunctionFromCoo(self, cooP1, cooP2): # cooP1[x,y], cooP2[x,y] # https://www.grund-wissen.de/informatik/python/scipy/sympy.html
-        k, d = sy.symbols("k d")# f(x)=k*x+d
-        equations = [
-            sy.Eq(cooP1[0]*k+d, cooP1[1]),
-            sy.Eq(cooP2[0]*k+d, cooP2[1]),
-        ]
-        return sy.solve(equations)
+
+    def getPixelValuesFrac(self, occ):
+        for itr in range(len(self.pixelCoordinates)):
+            pointAX = self.pixelCoordinates[itr,0] # [[x,y]]
+            pointBX = self.pixelCoordinates[itr+1,0] # [x,y]
+            pointAY = self.pixelCoordinates[itr,1] 
+            pointBY = self.pixelCoordinates[itr+1,1]
+        return getFragValuesBetween(occ, pointAX, pointBX, pointAY, pointBY)
+
+
 
 
 # img = cv.imread('input/1.png',1)
