@@ -1,6 +1,6 @@
-from reader import Reader
 from chart import *
 from const import *
+from result import *
 
 import numpy as np
 import cv2 as cv
@@ -10,32 +10,14 @@ def main():
     init()
     # print(getLinearFunctionFromCoo([100,120],[101, 130]))
     # extractValuesFromCoordinates()
-    drawCoordinatesOnImage()
-    present()
+    # drawCoordinatesOnImage()
+    result.logToCsv()
+    # present()
 
 def init():
     global img; img = cv.imread(INPUTFILE)
     global chart; chart = Chart(img)
-
-def extractValuesFromCoordinates():
-    # print(getFragValuesBetween(0.2,10,12,100,120))
-    # k = sy.S('k')
-    # d = sy.S('d')
-    # k,d = getLinearFunctionFromCoo([10,12],[100, 120])    
-    # print(d.values())
-    # x = sy.S('x')
-    # sol = sy.solve( sy.Eq(1000, 3*x -1) )
-    # print(sol[0]*2)
-
-    # print(chart.pixelCoordinates)    
-    # print(getFragValuesBetween(0.1,10,20,100,200))
-
-    return 0
-    # img[150:200,10:100] = [255,100,250]
-    # cv.imshow('ex1',img)
-    # getPointArrayOnFunction(0.1, 10, xPoint2,yPoint1, yPoint2)
-    # values = Reader.loadImageIntoPixels('./input/1.png')
-    # res = Chart.readTheDarkestValue(values[132])
+    global result; result = Result(chart)
 
 def drawCoordinatesOnImage():
     # cv.line(img,(0,0),(511,511),(255,0,0),5)
@@ -65,5 +47,26 @@ def equationSysX():
     # print(getPointArrayOnFunction(10, 0.1, 2, 3))
     print(sy.solve( sy.Eq(101,((100*x)/399)*400+x )))
 
+def extractValuesFromCoordinates():
+    # print(getFragValuesBetween(0.2,10,12,100,120))
+    # k = sy.S('k')
+    # d = sy.S('d')
+    # k,d = getLinearFunctionFromCoo([10,12],[100, 120])    
+    # print(d.values())
+    # x = sy.S('x')
+    # sol = sy.solve( sy.Eq(1000, 3*x -1) )
+    # print(sol[0]*2)
+    # print(chart.pixelCoordinates)    
+    # print(getFragValuesBetween(0.1,10,20,100,200))
+
+    return 0
+    # img[150:200,10:100] = [255,100,250]
+    # cv.imshow('ex1',img)
+    # getPointArrayOnFunction(0.1, 10, xPoint2,yPoint1, yPoint2)
+    # values = Reader.loadImageIntoPixels('./input/1.png')
+    # res = Chart.readTheDarkestValue(values[132])
+
 if __name__ == "__main__":
     main()
+
+
