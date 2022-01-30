@@ -26,8 +26,6 @@ def evaluate():
     # sol = sy.solve( sy.Eq(1000, 3*x -1) )
     # print(sol[0]*2)
 
-    
-
     x = sy.S('x')
     a, b, c = sy.symbols("a b c")
 
