@@ -1,4 +1,5 @@
 from fileinput import close
+from lib2to3.pgen2.token import INDENT
 from re import A, I
 from const import * 
 import numpy as np
@@ -13,20 +14,29 @@ def getColorProximity(colorA, colorB):#+ rgb
 
 def getLinearFunctionFromCoo(cooP1, cooP2): # cooP1[x,y], cooP2[x,y] # https://www.grund-wissen.de/informatik/python/scipy/sympy.html
     k, d = sy.symbols("k d")# f(x)=k*x+d
+    # k = sy.S('k')
+    # d = sy.S('d')
     equations = [
         sy.Eq(cooP1[0]*k+d, cooP1[1]),
         sy.Eq(cooP2[0]*k+d, cooP2[1]),
     ]
-    return sy.solve(equations)
+    
+    solution = sy.solve(equations)
+    k = solution[k]
+    d = solution[d]
 
-def getFragValuesBetween(occ,pointAX, pointBX,pointAY,pointBY): #pixelA[x,y],pixelB[x,y]
+    return {'k':sy.N(k),'d':sy.N(d)}
+
+def getFragValuesBetween(occ,pointAX, pointAY, pointBX, pointBY): #pixelA[x,y],pixelB[x,y]
     distance = np.abs(pointBX - pointAX)
     itr = 0 # iterator for each fragment between points 
-    k, d = getLinearFunctionFromCoo([pointAX, pointAY],[pointBX, pointBY])
+    funcvals = getLinearFunctionFromCoo([pointAX, pointAY],[pointBX, pointBY])
+    k = funcvals['k']
+    d = funcvals['d']
     preciseValuesBetween = []
     while itr < distance:
         pointAYonNewFragment = k * (pointAX + itr) + d # increasing pointAX by the fragment iterator and using this new xvalue with       
-        preciseValuesBetween.append([pointAX, pointAYonNewFragment])
+        preciseValuesBetween.append([pointAX+itr, pointAYonNewFragment])
         itr = itr + occ
     return preciseValuesBetween
 
@@ -49,11 +59,18 @@ def getPointArrayOnFunction( occ, xPoint1, xPoint2,yPoint1, yPoint2):##get coord
     return points
 
 class Chart:
+    """Class for the chart values
+
+        img {cv2.image} -- input image containing chart
+        coordinates {number[,]} -- coordinates with offset - according to the coordinate-system
+        pixelCoordinates {number[,]} -- coordinates without offset - according to the pixels on the image
+    """
+
     def __init__(self,img):
         # self.__img = img
         self.__pixelCoordinates =[]
         self.__coordiantes = []
-        self.initCoordinates(img)
+        self.initPixelCoordinates(img)
     def setcoordinates(self, coordinates):
         self.__coordinates = coordinates
     def getcoordinates(self):
@@ -61,20 +78,19 @@ class Chart:
     def delcoordinates(self):
         del self.__coordinates
     coordinates=property(getcoordinates, setcoordinates, delcoordinates)
-
+    
     def setPixelCoordinates(self, pixelCoordinates):
         self.__pixelCoordinates = pixelCoordinates
     def getPixelCoordinates(self):
-        self.updateCoordinatesAccordingPixelCoordinates()
         return self.__pixelCoordinates
     def delPixelCoordinates(self):
         del self.__pixelCoordinates
     pixelCoordinates=property(getPixelCoordinates, setPixelCoordinates, delPixelCoordinates)
     
-    def initCoordinates(self,img):
+    def initPixelCoordinates(self,img):
         for column in range(CHARTSTARTX, CHARTSTARTY):
-            xCoordinate = self.retrieveTheBluestValueFromColumn(img[:,column])
-            self.pixelCoordinates.append([xCoordinate, column])
+            yCoordinate = self.retrieveTheBluestValueFromColumn(img[:,column])
+            self.pixelCoordinates.append([column,yCoordinate])
             
     def retrieveTheBluestValueFromColumn(self, imgCol):
         closestIndexes = []
@@ -84,10 +100,6 @@ class Chart:
                 closestIndexes.append(index) # print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
         return round(sum(closestIndexes)/len(closestIndexes))
 
-    def updateCoordinatesAccordingPixelCoordinates(self):
-        self.coordinates = [1,1,1]
-
-
     def getPixelValuesFrac(self, occ):
         for itr in range(len(self.pixelCoordinates)):
             pointAX = self.pixelCoordinates[itr,0] # [[x,y]]
@@ -96,6 +108,11 @@ class Chart:
             pointBY = self.pixelCoordinates[itr+1,1]
         return getFragValuesBetween(occ, pointAX, pointBX, pointAY, pointBY)
 
+    def getConverted(self):
+        cook = []
+        for coo in self.pixelCoordinates:
+            cook.append([coo[0]-XINDENT,YINDENT-coo[1]])
+        return cook
 
 
 

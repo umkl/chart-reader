@@ -29,3 +29,20 @@ class LogAxis:
     def delValuesNoOffset(self):
         del self.__valuesNoOffset
     valuesNoOffset = property(fget=getValuesNoOffset, fset=setValuesNoOffset, fdel=delValuesNoOffset, doc=None)
+
+    def defineValues():
+        for i in range(1000):
+            
+# 200 von xachse
+# 255 * log()
+# 255*log(wert)=y
+# wert= 10^((1000+y)/255)
+# wert = 10^((756+y)/255)
+
+# 0 = 648 
+# 1 = 639
+# 2 = 384
+# d = 264
+# 9 
+
+# x = 100

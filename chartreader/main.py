@@ -7,16 +7,17 @@ import cv2 as cv
 import sympy as sy
 
 def main(): 
-    # init()
+    init()
     # print(getLinearFunctionFromCoo([100,120],[101, 130]))
-    evaluate()
-    # present()
+    # extractValuesFromCoordinates()
+    drawCoordinatesOnImage()
+    present()
 
 def init():
     global img; img = cv.imread(INPUTFILE)
     global chart; chart = Chart(img)
 
-def evaluate():
+def extractValuesFromCoordinates():
     # print(getFragValuesBetween(0.2,10,12,100,120))
     # k = sy.S('k')
     # d = sy.S('d')
@@ -26,55 +27,8 @@ def evaluate():
     # sol = sy.solve( sy.Eq(1000, 3*x -1) )
     # print(sol[0]*2)
 
-    x = sy.S('x')
-    a, b, c = sy.symbols("a b c")
-
-    eq = sy.Eq( a*x**2 + b*x + c, 0)
-
-    # Gleichung allgemein mit x als Variable lösen:
-
-    # sy.solve( eq, x )
-    # # Ergebnis: (-b + sqrt(-4*a*c + b**2))/(2*a), -(b + sqrt(-4*a*c + b**2))/(2*a)]
-
-    # # Gleichung mit Parametern a=1, b=3, c=2 lösen:
-
-    # sy.solve( eq.subs( {a:1, b:-3, c:2} ) )
-
-    # for i in getLinearFunctionFromCoo([10,12],[100, 120]):
-    #     print(i)
-    
-    # k, d = sy.symbols("k, d")# f(x)=k*x+d
-    k = sy.S('k')
-    d = sy.S('d')
-    
-    equations = [
-        sy.Eq(100*k+d, 120),
-        sy.Eq(10*k+d, 12),
-    ]
-    solution = sy.solve(equations)
-    k = solution[k]
-    print(sy.N(k))
-    
-
-    # Ergebnis: [1, 2]
-
-    # x = sy.S('x')
-    # # a, b, c = sy.symbols("a b c")
-
-    # eq = sy.Eq(3*x**2 + 3*x + 3, 0)
-
-    # # Gleichung allgemein mit x als Variable lösen:
-
-    # print(sy.solve( eq, x ))
-    # Ergebnis: (-b + sqrt(-4*a*c + b**2))/(2*a), -(b + sqrt(-4*a*c + b**2))/(2*a)]
-
-    # Gleichung mit Parametern a=1, b=3, c=2 lösen:
-
-    # print(sy.solve( eq.subs( {a:1, b:-3, c:2} ) ))
-    # Ergebnis: [1, 2]
-
-
-
+    # print(chart.pixelCoordinates)    
+    # print(getFragValuesBetween(0.1,10,20,100,200))
 
     return 0
     # img[150:200,10:100] = [255,100,250]
@@ -83,12 +37,15 @@ def evaluate():
     # values = Reader.loadImageIntoPixels('./input/1.png')
     # res = Chart.readTheDarkestValue(values[132])
 
-def present():    
+def drawCoordinatesOnImage():
     # cv.line(img,(0,0),(511,511),(255,0,0),5)
-    for val in chart.pixelCoordinates:
-        # print(val)
-        img[val[0], val[1]] = [255,150,180]
+    
+    for val in chart.getConverted():
+        print(val)
+        img[val[1], val[0]] = [255,150,180] # img[y,x] - flipped format
     # print(chart.pixelCoordinates)
+
+def present():    
     cv.imshow(INPUTFILE,img)
     # print(img[343,160])
     cv.waitKey(0)
