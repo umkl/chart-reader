@@ -11,8 +11,8 @@ def main():
     # print(getLinearFunctionFromCoo([100,120],[101, 130]))
     # extractValuesFromCoordinates()
     # drawCoordinatesOnImage()
-    result.logToCsv()
-    # present()
+    # result.logToCsv()
+    present()
 
 def init():
     global img; img = cv.imread(INPUTFILE)

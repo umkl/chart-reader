@@ -1,4 +1,5 @@
-INPUTFILE='./input/1.png'
+INPUTFILE='./input/2.png'
+OUTUPUTFILE='./input/1.png'
 XINDENT=102
 YINDENT=648
 YINDENTTOP=94
