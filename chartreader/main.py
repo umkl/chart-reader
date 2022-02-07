@@ -12,12 +12,17 @@ def main():
     # extractValuesFromCoordinates()
     # drawCoordinatesOnImage()
     # result.logToCsv()
+    #testDateAxis() 
     present()
 
 def init():
     global img; img = cv.imread(INPUTFILE)
     global chart; chart = Chart(img)
+    global dateaxis; dateaxis = DateAxis(img)
     global result; result = Result(chart)
+
+def testDateAxis():
+    print(dateaxis.values)
 
 def drawCoordinatesOnImage():
     # cv.line(img,(0,0),(511,511),(255,0,0),5)
