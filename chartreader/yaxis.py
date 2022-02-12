@@ -34,19 +34,6 @@ class LogAxis:
     # def defineValues():
     #     for i in range(1000):
 
-img = cv2.imread('../docs/Beispiele/Run 9/00.0-08.0-35.0-35.0-40.0-30.0-01.0-04.0-02.0-NONE.png')
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-cv2.imwrite('gray.jpg', gray)
-
-# originYPos = -72
-# originXPos = 103
-# originHexVal = '#b0b0b0'
-# while (originXPos < 0)
-#
-#
-# cv2.imshow('img', img)
-# cv2.waitKey(0)
-
 # 200 von xachse
 # 255 * log()
 # 255*log(wert)=y
@@ -60,3 +47,22 @@ cv2.imwrite('gray.jpg', gray)
 # 9
 
 # x = 100
+
+
+# look at origin pixel to determine whether it is actually the origin
+
+# originXPos = 102. pixel
+# originYPos = -72. pixel
+# pos san von rechts unten
+# originHexVal = '#b0b0b0'
+
+# while (originXPos < 0)
+#
+#
+# cv2.imwrite('gray.jpg', gray)
+# cv2.imshow('img', img)
+# cv2.waitKey(0)
+
+img = cv2.imread('../docs/Beispiele/Run 9/00.0-08.0-35.0-35.0-40.0-30.0-01.0-04.0-02.0-NONE.png')
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+print('Chart origin is in expected position: ' + str(gray[-72, 102] == 178))
