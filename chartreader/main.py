@@ -12,14 +12,13 @@ from result import *
 from PIL import Image
 import matplotlib.pyplot as plt
 
-
 """called by executing python3 main.py"""
 def main(): 
     """initialize all classes for _DI_"""
     init()
     
     """trying out current functionalities"""
-    # testsomestuff()
+    testsomestuff()
 
     """display manipulated pixels using the opencv-window"""
     present()
@@ -28,7 +27,7 @@ def init():
     # creating a global version of the image
     global img; img = cv.imread(INPUTFILE)
     
-    # global chart; chart = Chart(img)
+    global chart; chart = Chart(img)
     # global dateaxis; dateaxis = DateAxis(img)
     # global logaxis; logaxis = LogAxis(img)
 
@@ -36,32 +35,34 @@ def init():
     # global result; result = Result(chart, dateaxis, logaxis)
 
 def present():    
-    # comment this out when you are not on linux/xdg🙄
-    cv.imshow(INPUTFILE,img)
-    cv.waitKey(0)
+    # comment this out if you are not on linux/xdg🙄
+    # cv.imshow(INPUTFILE,img)
+    # cv.waitKey(0)
     
     # pil for windows/macos
     #1
-    # img2 = cv.cvtColor(img, cv.COLOR_BGR2RGB)
-    # im_pil = Image.fromarray(img2)
-    # im_pil.show()
+    img2 = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+    im_pil = Image.fromarray(img2)
+    im_pil.show()
 
     #2
     # plt_image = cv.cvtColor(img, cv.COLOR_BGR2RGB)
     # imgplot = plt.imshow(plt_image)
     # cv.waitKey(0)
 
-    
-
 
 """test functions:"""
 def testsomestuff():
-    print("test")
+    drawFromChartOnImage()
     # print(getLinearFunctionFromCoo([100,120],[101, 130]))
     # extractValuesFromCoordinates()
     # drawCoordinatesOnImage()
     # result.logToCsv()
     #testDateAxis() 
+
+def drawFromChartOnImage():
+    for i in chart.pixelCoordinates:
+        img[i[1],i[0]] = [150,120,200]
 
 def testDateAxis():
     print(dateaxis.values)
@@ -70,7 +71,7 @@ def drawCoordinatesOnImage():
     # cv.line(img,(0,0),(511,511),(255,0,0),5)
     
     for val in chart.getConverted():
-        print(val)
+
         img[val[1], val[0]] = [255,150,180] # img[y,x] - flipped format
     # print(chart.pixelCoordinates)
 
