@@ -6,6 +6,7 @@ import numpy as np
 import cv2 as cv
 import sympy as sy
 
+"""global helper functions"""
 global getFragValuesBetween, linearPitchFunction, getPointArrayOnFunction, getColorProximity, getLinearFunctionFromCoo # sumOfArray
 def getColorProximity(colorA, colorB):#+ rgb
     [rA,gA,bA] = colorA
@@ -39,12 +40,6 @@ def getFragValuesBetween(occ,pointAX, pointAY, pointBX, pointBY): #pixelA[x,y],p
         preciseValuesBetween.append([pointAX+itr, pointAYonNewFragment])
         itr = itr + occ
     return preciseValuesBetween
-
-# def sumOfArray(inputar):
-#     arr = 0
-#     for i in inputar:
-#         arr += i
-#     return arr
 
 def linearPitchFunction(x,k): # f(x)=k*x+d
         return k*x

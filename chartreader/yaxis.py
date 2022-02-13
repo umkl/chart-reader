@@ -76,9 +76,10 @@ def getOriginXPos(path):
 
     return origin_x_pos
 
-
-for root, dirs, files in os.walk('../docs/Beispiele'):
-    for filename in files:
-        if filename.endswith('.png'):
-            originX = getOriginXPos(os.path.join(root, filename))
-            print('Chart origin for ' + filename + ' is in position: -72/' + str(originX))
+# hobs do eine do, damits nd beim import ausgführt wird
+if __name__ == "__main__":
+    for root, dirs, files in os.walk('../docs/Beispiele'):
+        for filename in files:
+            if filename.endswith('.png'):
+                originX = getOriginXPos(os.path.join(root, filename))
+                print('Chart origin for ' + filename + ' is in position: -72/' + str(originX))

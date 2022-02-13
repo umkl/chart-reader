@@ -3,19 +3,23 @@ import numpy as np
 import cv2 as cv
 import sympy as sy
 
-
 """imports from our implementation"""
 from chart import *
 from const import *
 from result import *
 
+"""🙄 """
+from PIL import Image
+import matplotlib.pyplot as plt
+
+
 """called by executing python3 main.py"""
 def main(): 
     """initialize all classes for _DI_"""
     init()
-
+    
     """trying out current functionalities"""
-    testsomestuff()
+    # testsomestuff()
 
     """display manipulated pixels using the opencv-window"""
     present()
@@ -24,16 +28,31 @@ def init():
     # creating a global version of the image
     global img; img = cv.imread(INPUTFILE)
     
-    global chart; chart = Chart(img)
-    global dateaxis; dateaxis = DateAxis(img)
-    global logaxis; logaxis = LogAxis(img)
+    # global chart; chart = Chart(img)
+    # global dateaxis; dateaxis = DateAxis(img)
+    # global logaxis; logaxis = LogAxis(img)
 
     #combining all data from all 3 sections(chart, dateaxis, logaxis) together -> applying tests, logging to csv
-    global result; result = Result(chart, dateaxis, logaxis)
+    # global result; result = Result(chart, dateaxis, logaxis)
 
 def present():    
+    # comment this out when you are not on linux/xdg🙄
     cv.imshow(INPUTFILE,img)
     cv.waitKey(0)
+    
+    # pil for windows/macos
+    #1
+    # img2 = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+    # im_pil = Image.fromarray(img2)
+    # im_pil.show()
+
+    #2
+    # plt_image = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+    # imgplot = plt.imshow(plt_image)
+    # cv.waitKey(0)
+
+    
+
 
 """test functions:"""
 def testsomestuff():
@@ -88,7 +107,7 @@ def extractValuesFromCoordinates():
     # res = Chart.readTheDarkestValue(values[132])
     return 0
 
-# makes the file importable, gets executed by importing our lib
+# makes the file importable, so code does not get executed by importing our lib
 if __name__ == "__main__":
     main()
 
