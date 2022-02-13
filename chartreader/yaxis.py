@@ -1,4 +1,4 @@
-from const import *
+import os
 import cv2
 
 class LogAxis:
@@ -50,10 +50,10 @@ class LogAxis:
 
 
 # look at origin pixel to determine whether it is actually the origin
+# we cannot expect the origin to be on the same x-coordinate, due to values of varying lengths on the y-axis' legend
 
-# originXPos = 102. pixel
 # originYPos = -72. pixel
-# pos san von rechts unten
+# pos san von links unten
 # originHexVal = '#b0b0b0'
 
 # while (originXPos < 0)
@@ -63,6 +63,22 @@ class LogAxis:
 # cv2.imshow('img', img)
 # cv2.waitKey(0)
 
-img = cv2.imread('../docs/Beispiele/Run 9/00.0-08.0-35.0-35.0-40.0-30.0-01.0-04.0-02.0-NONE.png')
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-print('Chart origin is in expected position: ' + str(gray[-72, 102] == 178))
+
+def getOriginXPos(path):
+    img = cv2.imread(path)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    width = gray.shape[1]
+    origin_x_pos = -1
+    for i in range(width):
+        if gray[-72, i] == 178:
+            origin_x_pos = i
+
+    return origin_x_pos
+
+
+for root, dirs, files in os.walk('../docs/Beispiele'):
+    for filename in files:
+        if filename.endswith('.png'):
+            originX = getOriginXPos(os.path.join(root, filename))
+            print('Chart origin for ' + filename + ' is in position: -72/' + str(originX))
