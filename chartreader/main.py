@@ -8,7 +8,7 @@ from chart import *
 from const import *
 from result import *
 
-"""🙄 """
+"""wonn ma macos oda windows hernimmt🙄 """
 from PIL import Image
 import matplotlib.pyplot as plt
 
