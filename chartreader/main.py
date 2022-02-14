@@ -1,4 +1,5 @@
 """3rd imports"""
+from matplotlib.axis import XAxis
 import numpy as np
 import cv2 as cv
 import sympy as sy
@@ -27,8 +28,8 @@ def init():
     # creating a global version of the image
     global img; img = cv.imread(INPUTFILE)
     
-    global chart; chart = Chart(img)
-    # global dateaxis; dateaxis = DateAxis(img)
+    # global chart; chart = Chart(img)
+    global dateaxis; dateaxis = DateAxis(img)
     # global logaxis; logaxis = LogAxis(img)
 
     #combining all data from all 3 sections(chart, dateaxis, logaxis) together -> applying tests, logging to csv
@@ -53,12 +54,18 @@ def present():
 
 """test functions:"""
 def testsomestuff():
-    drawFromChartOnImage()
+    #choat
+    # drawFromChartOnImage()
+    drawFromDateaxisOnImage();
     # print(getLinearFunctionFromCoo([100,120],[101, 130]))
     # extractValuesFromCoordinates()
     # drawCoordinatesOnImage()
     # result.logToCsv()
     #testDateAxis() 
+
+def drawFromDateaxisOnImage():
+    for i in dateaxis.detectAxis():
+        img[i[1],i[0]] = [150,120,200]
 
 def drawFromChartOnImage():
     for i in chart.pixelCoordinates:
@@ -70,8 +77,7 @@ def testDateAxis():
 def drawCoordinatesOnImage():
     # cv.line(img,(0,0),(511,511),(255,0,0),5)
     
-    for val in chart.getConverted():
-
+    for val in chart.coordinates:
         img[val[1], val[0]] = [255,150,180] # img[y,x] - flipped format
     # print(chart.pixelCoordinates)
 

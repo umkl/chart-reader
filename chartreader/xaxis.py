@@ -29,3 +29,11 @@ class DateAxis:
     def delValuesNoOffset(self):
         del self.__valuesNoOffset
     valuesNoOffset = property(fget=getValuesNoOffset, fset=setValuesNoOffset, fdel=delValuesNoOffset, doc=None)
+
+    def detectAxis(self):
+        someColumn = []
+        for i in img[1,i]:
+            someColumn.append([i,4])#y,x
+        return someColumn
+
+        

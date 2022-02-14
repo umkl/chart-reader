@@ -66,9 +66,9 @@ class Chart:
         self.__pixelCoordinates = []
         self.__coordiantes = []
 
-        #retriving pixel values by bluest value
+        #retrieving pixel values by bluest value
         self.definePixelCoordinates(img)
-        self.defineCoordinatesByPixelCoordinates(self.pixelCoordinates)
+        # self.defineCoordinatesByPixelCoordinates(self.pixelCoordinates)
     def setcoordinates(self, coordinates):
         self.__coordinates = coordinates
     def getcoordinates(self):
@@ -108,7 +108,7 @@ class Chart:
 
     def defineCoordinatesByPixelCoordinates(self, originPixelCoordinates):
         for pixelCoordinate in originPixelCoordinates:
-            self.coordinates.append([pixelCoordinate[0]-XINDENT,YINDENT-pixelCoordinate[1]])
+            self.__coordinates.append([pixelCoordinate[0]-XINDENT,YINDENT-pixelCoordinate[1]])
 
 
 
