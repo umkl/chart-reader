@@ -11,10 +11,13 @@ class LogAxis:
         valuesNoOffset {[number, number]} -- list for log-values on each row/y-axis or preciser with no Offset (according to pixel values on image)
     """
 
+    originHeight = -72;
+    originGrayVal = 178;
+
     def __init__(self, img):
         self.__img = img
-        self.__values = None
-        self.__valuesNoOffset = None
+        self.__values = __getYAxisValuesOffset(img)
+        self.__valuesNoOffset = __getYAxisValues(img)
 
     def setValues(self, val):
         self.__values = val
@@ -38,8 +41,36 @@ class LogAxis:
 
     valuesNoOffset = property(fget=getValuesNoOffset, fset=setValuesNoOffset, fdel=delValuesNoOffset, doc=None)
 
-    # def defineValues():
-    #     for i in range(1000):
+    def __getOriginXPos(img):
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        width = gray.shape[1]
+        origin_x_pos = -1
+        for i in range(width):
+            if gray[originHeight, i] == originGrayVal:
+                origin_x_pos = i
+
+        return origin_x_pos
+
+    def __getYAxisValues(img):
+        origin_x_pos = __getOriginXPos(img)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        height = gray.shape[0]
+
+        axis_end_y = -1
+        for i in range(height - originHeight, 0, -1): # Spalte von da y-Achse wird von oben noch unten durch gonga
+            if gray[i, origin_x_pos] == 255: # Wonn d Achse aufhead, oiso da Grauwert s erste moi ned weiß is
+                axis_end_y = i
+                break
+
+        axis_values = range(axis_end_y, height - (originHeight + 1))
+
+        return axis_values
+
+    def __getYAxisValuesOffset(img):
+        values = __getYAxisValues(img)
+        for i in len(values):
+            values[i] += 72
+        return values
 
 
 # 200 von xachse
@@ -55,43 +86,11 @@ class LogAxis:
 # 9
 
 # x = 100
-
-
-# look at origin pixel to determine whether it is actually the origin
-# we cannot expect the origin to be on the same x-coordinate, due to values of varying lengths on the y-axis' legend
-
-# originYPos = -72. pixel von links unten
-# originHexVal = '#b0b0b0'
-
-def getOriginXPos(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    width = gray.shape[1]
-    origin_x_pos = -1
-    for i in range(width):
-        if gray[-72, i] == 178:
-            origin_x_pos = i
-
-    return origin_x_pos
-
-
-def getYAxisValues(img):
-    origin_x_pos = getOriginXPos(img)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    height = gray.shape[0]
-
-    axis_end_y = -1
-    for i in range(height - 72, 0, -1):
-        if gray[i, origin_x_pos] == 255:
-            axis_end_y = i
-            break
-
-    axis_values = range(axis_end_y, height - 71)
-    return axis_values
-
-
-for root, dirs, files in os.walk('../docs/Beispiele'):
-    for filename in files:
-        if filename.endswith('.png'):
-            img = cv2.imread(os.path.join(root, filename))
-            yValues = getYAxisValues(img)
-            print('Y-Axis in image ' + filename + ' is represented by the following pixels: ' + str(yValues))
+# hobs do eine do, damits nd beim import ausgführt wird
+if __name__ == "__main__":
+    for root, dirs, files in os.walk('../docs/Beispiele'):
+        for filename in files:
+            if filename.endswith('.png'):
+                img = cv2.imread(os.path.join(root, filename))
+                yValues = getYAxisValues(img)
+                print('Y-Axis in image ' + filename + ' is represented by the following pixels: ' + str(yValues))
