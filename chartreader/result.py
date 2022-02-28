@@ -1,7 +1,8 @@
-from xaxis import DateAxis 
+from xaxis import DateAxis
 from yaxis import LogAxis
 from chart import Chart
 import csv
+
 
 class Result:
     def __init__(self, chart, dateaxis, logaxis):
