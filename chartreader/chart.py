@@ -6,6 +6,7 @@ import numpy as np
 import cv2 as cv
 import sympy as sy
 
+"""global helper functions"""
 global getFragValuesBetween, linearPitchFunction, getPointArrayOnFunction, getColorProximity, getLinearFunctionFromCoo # sumOfArray
 def getColorProximity(colorA, colorB):#+ rgb
     [rA,gA,bA] = colorA
@@ -40,12 +41,6 @@ def getFragValuesBetween(occ,pointAX, pointAY, pointBX, pointBY): #pixelA[x,y],p
         itr = itr + occ
     return preciseValuesBetween
 
-# def sumOfArray(inputar):
-#     arr = 0
-#     for i in inputar:
-#         arr += i
-#     return arr
-
 def linearPitchFunction(x,k): # f(x)=k*x+d
         return k*x
 
@@ -68,9 +63,12 @@ class Chart:
 
     def __init__(self,img):
         # self.__img = img
-        self.__pixelCoordinates =[]
+        self.__pixelCoordinates = []
         self.__coordiantes = []
-        self.initPixelCoordinates(img)
+
+        #retriving pixel values by bluest value
+        self.definePixelCoordinates(img)
+        self.defineCoordinatesByPixelCoordinates(self.pixelCoordinates)
     def setcoordinates(self, coordinates):
         self.__coordinates = coordinates
     def getcoordinates(self):
@@ -87,8 +85,8 @@ class Chart:
         del self.__pixelCoordinates
     pixelCoordinates=property(getPixelCoordinates, setPixelCoordinates, delPixelCoordinates)
     
-    def initPixelCoordinates(self,img):
-        for column in range(CHARTSTARTX, CHARTSTARTY):
+    def definePixelCoordinates(self,img):
+        for column in range(CHARTSTARTX, CHARTENDX):
             yCoordinate = self.retrieveTheBluestValueFromColumn(img[:,column])
             self.pixelCoordinates.append([column,yCoordinate])
             
@@ -100,7 +98,7 @@ class Chart:
                 closestIndexes.append(index) # print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
         return round(sum(closestIndexes)/len(closestIndexes))
 
-    def getPixelValuesFrac(self, occ):
+    def getPixelValuesFrag(self, occ):
         for itr in range(len(self.pixelCoordinates)):
             pointAX = self.pixelCoordinates[itr,0] # [[x,y]]
             pointBX = self.pixelCoordinates[itr+1,0] # [x,y]
@@ -108,11 +106,9 @@ class Chart:
             pointBY = self.pixelCoordinates[itr+1,1]
         return getFragValuesBetween(occ, pointAX, pointBX, pointAY, pointBY)
 
-    def getConverted(self):
-        cook = []
-        for coo in self.pixelCoordinates:
-            cook.append([coo[0]-XINDENT,YINDENT-coo[1]])
-        return cook
+    def defineCoordinatesByPixelCoordinates(self, originPixelCoordinates):
+        for pixelCoordinate in originPixelCoordinates:
+            self.coordinates.append([pixelCoordinate[0]-XINDENT,YINDENT-pixelCoordinate[1]])
 
 
 
