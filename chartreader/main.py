@@ -1,25 +1,68 @@
-from chart import *
-from const import *
-from result import *
-
+"""3rd imports"""
 import numpy as np
 import cv2 as cv
 import sympy as sy
 
+"""imports from our implementation"""
+from chart import *
+from const import *
+from result import *
+
+"""wonn ma macos oda windows hernimmt🙄 """
+from PIL import Image
+import matplotlib.pyplot as plt
+
+"""called by executing python3 main.py"""
 def main(): 
+    """initialize all classes for _DI_"""
     init()
+    
+    """trying out current functionalities"""
+    testsomestuff()
+
+    """display manipulated pixels using the opencv-window"""
+    present()
+
+def init():
+    # creating a global version of the image
+    global img; img = cv.imread(INPUTFILE)
+    
+    global chart; chart = Chart(img)
+    # global dateaxis; dateaxis = DateAxis(img)
+    # global logaxis; logaxis = LogAxis(img)
+
+    #combining all data from all 3 sections(chart, dateaxis, logaxis) together -> applying tests, logging to csv
+    # global result; result = Result(chart, dateaxis, logaxis)
+
+def present():    
+    # comment this out if you are not on linux/xdg🙄
+    # cv.imshow(INPUTFILE,img)
+    # cv.waitKey(0)
+    
+    # pil for windows/macos
+    #1
+    img2 = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+    im_pil = Image.fromarray(img2)
+    im_pil.show()
+
+    #2
+    # plt_image = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+    # imgplot = plt.imshow(plt_image)
+    # cv.waitKey(0)
+
+
+"""test functions:"""
+def testsomestuff():
+    drawFromChartOnImage()
     # print(getLinearFunctionFromCoo([100,120],[101, 130]))
     # extractValuesFromCoordinates()
     # drawCoordinatesOnImage()
     # result.logToCsv()
     #testDateAxis() 
-    present()
 
-def init():
-    global img; img = cv.imread(INPUTFILE)
-    global chart; chart = Chart(img)
-    global dateaxis; dateaxis = DateAxis(img)
-    global result; result = Result(chart)
+def drawFromChartOnImage():
+    for i in chart.pixelCoordinates:
+        img[i[1],i[0]] = [150,120,200]
 
 def testDateAxis():
     print(dateaxis.values)
@@ -28,14 +71,9 @@ def drawCoordinatesOnImage():
     # cv.line(img,(0,0),(511,511),(255,0,0),5)
     
     for val in chart.getConverted():
-        print(val)
+
         img[val[1], val[0]] = [255,150,180] # img[y,x] - flipped format
     # print(chart.pixelCoordinates)
-
-def present():    
-    cv.imshow(INPUTFILE,img)
-    # print(img[343,160])
-    cv.waitKey(0)
 
 def drawByAvg():
     op = sum(getColorProximity([51,102,204],[51,102,204]))
@@ -63,15 +101,14 @@ def extractValuesFromCoordinates():
     # print(sol[0]*2)
     # print(chart.pixelCoordinates)    
     # print(getFragValuesBetween(0.1,10,20,100,200))
-
-    return 0
     # img[150:200,10:100] = [255,100,250]
     # cv.imshow('ex1',img)
     # getPointArrayOnFunction(0.1, 10, xPoint2,yPoint1, yPoint2)
     # values = Reader.loadImageIntoPixels('./input/1.png')
     # res = Chart.readTheDarkestValue(values[132])
+    return 0
 
+# makes the file importable, so code does not get executed by importing our lib
 if __name__ == "__main__":
     main()
-
 

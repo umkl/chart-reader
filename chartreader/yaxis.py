@@ -91,7 +91,6 @@ class LogAxis:
 
 # x = 100
 
-
 # hobs do eine do, damits nd beim import ausgführt wird
 if __name__ == "__main__":
     for root, dirs, files in os.walk('../docs/Beispiele'):
