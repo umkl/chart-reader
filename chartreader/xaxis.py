@@ -65,6 +65,13 @@ def getXStarterValue(image):
             return index
 
 
+def getXEndValue(image, xStarter):
+    width = image.shape[1]
+    for index in range(width)[xStarter:]:
+        if image[yStarterOffset, index] == 255:
+            return index - 1
+
+
 def getThreeMonthsSeparators(image):
     width = image.shape[1]
     seperator = []
@@ -78,13 +85,19 @@ def getPixelsPerDay(monthPixels, daysOfMonth):
     return monthPixels / daysOfMonth
 
 
+def getValues(image):
+    image = convertImageIntoGrayscale(image)
+    print(filename)
+    starter_value = getXStarterValue(image)
+    print(starter_value)
+    print(getXEndValue(image, starter_value))
+    print(getThreeMonthsSeparators(image))
+
+
 # Gschnorrt vo da y-Axis
 if __name__ == "__main__":
     for root, dirs, files in os.walk('../docs/Beispiele'):
         for filename in files:
             if filename.endswith('.png'):
                 img = cv2.imread(os.path.join(root, filename))
-                img = convertImageIntoGrayscale(img)
-                xAxisStartPos = getXStarterValue(img)
-                print(xAxisStartPos)
-                print(getThreeMonthsSeparators(img))
+                getValues(img)
