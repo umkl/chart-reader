@@ -27,7 +27,7 @@ def init():
     # creating a global version of the image
     global img; img = cv.imread(INPUTFILE)
     
-    # global chart; chart = Chart(img)
+    global chart; chart = Chart(img)
     # global dateaxis; dateaxis = DateAxis(img)
     # global logaxis; logaxis = LogAxis(img)
 
