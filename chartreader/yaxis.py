@@ -76,6 +76,29 @@ class LogAxis:
             i = i - self.originHeight
         return values
 
+    # Needs reworking: if the topmost "Querstrich" is supposed to be marked, it doesn't get marked, because there's no further Strich to compare it to.
+    # Also, if multiple Striche are too close together, some get wrongly marked because there can be a gap of one white pixel between two or more back-to-back grey pixels.
+    def getYAxisValuesUnitSteps(self):
+        x_pos = self.getOriginXPos() - 1
+        gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
+        height = gray.shape[0]
+
+        lastYValue = 0
+        oldUnitDiff = 0
+        newUnitDiff = 0
+        for i in range(height + self.originHeight, 0, -1):
+            if gray[i, x_pos] != 255:
+                oldUnitDiff = newUnitDiff
+                newUnitDiff = lastYValue - i
+                if newUnitDiff > oldUnitDiff and newUnitDiff > 1:
+                    # lastYValue is Unit-Strich
+                    self.__img[lastYValue, x_pos] = (0, 255, 0)
+                lastYValue = i
+        cv2.imshow('img', self.__img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+
 
 # 200 von xachse
 # 255 * log()
@@ -98,5 +121,4 @@ if __name__ == "__main__":
             if filename.endswith('.png'):
                 imgPath = os.path.join(root, filename)
                 axis = LogAxis(imgPath)
-                yValues = axis.getYAxisValues()
-                print('Y-Axis in image ' + filename + ' is represented by the following pixels: ' + str(yValues))
+                axis.getYAxisValuesUnitSteps()
