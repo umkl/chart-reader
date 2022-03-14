@@ -1,11 +1,7 @@
 import os
 
 import cv2
-import array as arr
-
-from const import *
-from cv2 import *
-import numpy as np
+from datetime import date
 
 
 class DateAxis:
@@ -48,10 +44,10 @@ class DateAxis:
 
 # Y-Offset always the same => Hardcode
 yStarterOffset = -72
-monthsLengths = arr.array("i", [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
-                                31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
-                                31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
-                                31, 28, 31])
+# startDate always the same => Hardcode
+startDate = date(2018, 1, 1)
+# endDate always the same => Hardcode
+endDate = date(2019, 3, 1)
 
 
 def convertImageIntoGrayscale(image):
@@ -62,16 +58,16 @@ def getXStarterValue(image):
     width = image.shape[1]
     for index in range(width):
         if image[yStarterOffset, index] == 178:
-            return index
+            return index + 1
 
 
 def getXEndValue(image, xStarter):
     width = image.shape[1]
     for index in range(width)[xStarter:]:
         if image[yStarterOffset, index] == 255:
-            return index - 1
+            return index - 2
 
-
+""" depr
 def getThreeMonthsSeparators(image):
     width = image.shape[1]
     seperator = []
@@ -79,19 +75,21 @@ def getThreeMonthsSeparators(image):
         if image[yStarterOffset, index] == 168:
             seperator.append(index)
     return seperator
+"""
 
 
-def getPixelsPerDay(monthPixels, daysOfMonth):
-    return monthPixels / daysOfMonth
+def getPixelsPerDay(graphStartValue, graphEndValue, daysBetween):
+    return daysBetween / (graphEndValue - graphStartValue)
 
 
 def getValues(image):
     image = convertImageIntoGrayscale(image)
     print(filename)
     starter_value = getXStarterValue(image)
-    print(starter_value)
-    print(getXEndValue(image, starter_value))
-    print(getThreeMonthsSeparators(image))
+    end_value = getXEndValue(image, starter_value)
+    days_between = (endDate - startDate).days
+    print('Day per pixel')
+    print(getPixelsPerDay(starter_value, end_value, days_between))
 
 
 # Gschnorrt vo da y-Axis
