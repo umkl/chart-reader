@@ -47,7 +47,7 @@ yStarterOffset = -72
 # startDate always the same => Hardcode
 startDate = date(2018, 1, 1)
 # endDate always the same => Hardcode
-endDate = date(2019, 3, 1)
+endDate = date(2021, 3, 1)
 
 
 def convertImageIntoGrayscale(image):
@@ -67,6 +67,12 @@ def getXEndValue(image, xStarter):
         if image[yStarterOffset, index] == 255:
             return index - 2
 
+def initValues(self):
+    self.values = map(number, number)
+    pixelPerDay = getPixelsPerDay(getXEndValue(self.__imgInGrayscale), getXEndValue(self.__imgInGrayscale),    days_between = (endDate - startDate).days)
+    for i in range (getXEndValue(self.__imgInGray) - getXStarterValue(self.__imgInGrayscale)):
+        self.values.add(i, i*pixelPerDay)
+
 """ depr
 def getThreeMonthsSeparators(image):
     width = image.shape[1]
@@ -76,6 +82,7 @@ def getThreeMonthsSeparators(image):
             seperator.append(index)
     return seperator
 """
+
 
 
 def getPixelsPerDay(graphStartValue, graphEndValue, daysBetween):

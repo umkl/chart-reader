@@ -9,8 +9,8 @@ from const import *
 from result import *
 
 """wonn ma macos oda windows hernimmt🙄 """
-from PIL import Image
-import matplotlib.pyplot as plt
+# from PIL import Image
+# import matplotlib.pyplot as plt
 
 """called by executing python3 main.py"""
 def main(): 
@@ -18,7 +18,7 @@ def main():
     init()
     
     """trying out current functionalities"""
-    testsomestuff()
+    # testsomestuff()
 
     """display manipulated pixels using the opencv-window"""
     present()
@@ -28,7 +28,7 @@ def init():
     global img; img = cv.imread(INPUTFILE)
     
     global chart; chart = Chart(img)
-    # global dateaxis; dateaxis = DateAxis(img)
+    global dateaxis; dateaxis = DateAxis(img)
     # global logaxis; logaxis = LogAxis(img)
 
     #combining all data from all 3 sections(chart, dateaxis, logaxis) together -> applying tests, logging to csv
