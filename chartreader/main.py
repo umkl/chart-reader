@@ -18,7 +18,7 @@ def main():
     init()
     
     """trying out current functionalities"""
-    # testsomestuff()
+    testsomestuff()
 
     """display manipulated pixels using the opencv-window"""
     present()
