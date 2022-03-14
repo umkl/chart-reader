@@ -96,7 +96,6 @@ if __name__ == "__main__":
     for root, dirs, files in os.walk('../docs/Beispiele'):
         for filename in files:
             if filename.endswith('.png'):
-                imgPath = os.path.join(root, filename)
-                axis = LogAxis(imgPath)
-                yValues = axis.getYAxisValues()
+                img = cv2.imread(os.path.join(root, filename))
+                yValues = getYAxisValues(img)
                 print('Y-Axis in image ' + filename + ' is represented by the following pixels: ' + str(yValues))
