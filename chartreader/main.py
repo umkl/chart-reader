@@ -21,18 +21,25 @@ def main():
     # testsomestuff()
 
     """display manipulated pixels using the opencv-window"""
-    present()
+    # present()
+
+    log()
+
+    
 
 def init():
     # creating a global version of the image
     global img; img = cv.imread(INPUTFILE)
     
     global chart; chart = Chart(img)
-    # global dateaxis; dateaxis = DateAxis(img)
-    # global logaxis; logaxis = LogAxis(img)
+    global dateaxis; dateaxis = DateAxis(img)
+    global logaxis; logaxis = LogAxis(img)
 
     #combining all data from all 3 sections(chart, dateaxis, logaxis) together -> applying tests, logging to csv
-    # global result; result = Result(chart, dateaxis, logaxis)
+    global result; result = Result(chart, dateaxis, logaxis)
+
+def log():
+    result.logToCsv()
 
 def present():    
     cv.imshow(INPUTFILE,img)
