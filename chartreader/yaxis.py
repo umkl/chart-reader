@@ -63,14 +63,10 @@ class LogAxis:
         axis_end_y = -1
         for i in range(height + self.originHeight, 0, -1): # Spalte von da y-Achse wird von unten noch oben durch gonga (Werte umdraht weil links oben = 0/0, height + weil originHeight negativ)
             if gray[i, origin_x_pos] == 255: # Wonn d Achse aufhead, oiso da Grauwert s erste moi weiß is
-                axis_end_y = i
+                axis_end_y = i + 1
                 break
 
-        axis_values = [*range(axis_end_y, height - (self.originHeight + 1))]
-
-        # cv2.imshow('img', self.__img)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
+        axis_values = [*range(axis_end_y, height + (self.originHeight + 1))]
 
         return axis_values
 
@@ -79,22 +75,31 @@ class LogAxis:
         gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
         height = gray.shape[0]
 
-        axisValues = self.getYAxisValuesOffset()
+        axisValues = self.__values
         axisValues.reverse()
-        print(axisValues)
 
         oldDiff = 0
         curDiff = 0
+        stepDiff = 0
         lastYValue = 0
         unitSteps = []
 
         for i in axisValues:
-            if gray[i, x_pos] == self.unitStepGrayVal:
+            if gray[i, x_pos] != 255:
                 oldDiff = curDiff
                 curDiff = lastYValue - i
                 if curDiff > oldDiff:
-                    unitSteps.push(i)
+                    unitSteps.append(lastYValue)
                 lastYValue = i
+
+        stepDiff = unitSteps[0] - unitSteps[1] # could throw an exception
+
+        for i in unitSteps:
+            self.__img[i, x_pos] = (0, 0, 255)
+
+        cv2.imshow('img', self.__img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
     def getYAxisValuesOffset(self):
         values = self.getYAxisValues()
@@ -120,6 +125,8 @@ class LogAxis:
 
 # hobs do eine do, damits nd beim import ausgführt wird
 if __name__ == "__main__":
+    # axis = LogAxis(cv2.imread('../docs/Beispiele/Run 9/00.0-08.0-35.0-35.0-40.0-30.0-01.0-04.0-02.0-NONE.png'))
+    # axis.getYAxisUnitSteps()
     for root, dirs, files in os.walk('../docs/Beispiele'):
         for filename in files:
             if filename.endswith('.png'):
