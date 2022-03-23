@@ -16,10 +16,10 @@ class LogAxis:
 
     originHeight = -72
     originGrayVal = 178
+    unitStepGrayVal = 160
 
-    def __init__(self, imgPath):
-        self.__img = cv2.imread(imgPath)
-        self.__imgPath = imgPath
+    def __init__(self, img):
+        self.__img = img
         self.__values = self.getYAxisValuesOffset()
         self.__valuesNoOffset = self.getYAxisValues()
 
@@ -66,37 +66,41 @@ class LogAxis:
                 axis_end_y = i
                 break
 
-        axis_values = range(axis_end_y, height - (self.originHeight + 1))
+        axis_values = [*range(axis_end_y, height - (self.originHeight + 1))]
+
+        # cv2.imshow('img', self.__img)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
         return axis_values
+
+    def getYAxisUnitSteps(self):
+        x_pos = self.getOriginXPos() - 1
+        gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
+        height = gray.shape[0]
+
+        axisValues = self.getYAxisValuesOffset()
+        axisValues.reverse()
+        print(axisValues)
+
+        oldDiff = 0
+        curDiff = 0
+        lastYValue = 0
+        unitSteps = []
+
+        for i in axisValues:
+            if gray[i, x_pos] == self.unitStepGrayVal:
+                oldDiff = curDiff
+                curDiff = lastYValue - i
+                if curDiff > oldDiff:
+                    unitSteps.push(i)
+                lastYValue = i
 
     def getYAxisValuesOffset(self):
         values = self.getYAxisValues()
         for i in values:
             i = i - self.originHeight
         return values
-
-    # Needs reworking: if the topmost "Querstrich" is supposed to be marked, it doesn't get marked, because there's no further Strich to compare it to.
-    # Also, if multiple Striche are too close together, some get wrongly marked because there can be a gap of one white pixel between two or more back-to-back grey pixels.
-    def getYAxisValuesUnitSteps(self):
-        x_pos = self.getOriginXPos() - 1
-        gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
-        height = gray.shape[0]
-
-        lastYValue = 0
-        oldUnitDiff = 0
-        newUnitDiff = 0
-        for i in range(height + self.originHeight, 0, -1):
-            if gray[i, x_pos] != 255:
-                oldUnitDiff = newUnitDiff
-                newUnitDiff = lastYValue - i
-                if newUnitDiff > oldUnitDiff and newUnitDiff > 1:
-                    # lastYValue is Unit-Strich
-                    self.__img[lastYValue, x_pos] = (0, 255, 0)
-                lastYValue = i
-        cv2.imshow('img', self.__img)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
 
 
 
@@ -120,5 +124,5 @@ if __name__ == "__main__":
         for filename in files:
             if filename.endswith('.png'):
                 imgPath = os.path.join(root, filename)
-                axis = LogAxis(imgPath)
-                axis.getYAxisValuesUnitSteps()
+                axis = LogAxis(cv2.imread(imgPath))
+                axis.getYAxisUnitSteps()
