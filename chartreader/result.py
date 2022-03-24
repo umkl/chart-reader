@@ -16,15 +16,20 @@ class Result:
         self.__fullMapped = [] # chart pixelwerte - abgezogen pixelwerte - auf dateaxis und logaxis gemapped 
         
 
-    def mapOlles(self):
-        for index, value in self.__dateAxis.values:
-            self.__dateMapped[index] = value
-        for index, value in self.__logAxis.values:
-            self.__logMapped[index] = value
+    # def mapOlles(self):
+    #     for index, value in self.__dateAxis.values:
+    #         self.__dateMapped[index] = value
+    #     for index, value in self.__logAxis.values:
+    #         self.__logMapped[index] = value
         
-        for x, y in self.__chart.coordinates: # x ought to be the key and y the value
-            self.__fullMapped.append([self.__dateMapped[x],self.__logMapped[y]])
-            
+    #     for x, y in self.__chart.coordinates: # x ought to be the key and y the value
+    #         self.__fullMapped.append([self.__dateMapped[x],self.__logMapped[y]])
+
+    def mapDate(self):
+        for index, value in self.__dateAxis.values:
+            print("value: ",value, " mapped: ", self.__dateMapped[index])
+            self.__dateMapped[index] = value
+
 
     def logToCsv(self):
         with open('output/1.csv', 'w') as f:
