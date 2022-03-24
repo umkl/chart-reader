@@ -44,10 +44,16 @@ class DateAxis:
     valuesNoOffset = property(fget=getValuesNoOffset, fset=setValuesNoOffset, fdel=delValuesNoOffset, doc=None)
     
     def initValues(self):
-        pixelPerDay = self.getPixelsPerDay(self.getXEndValue(self.__imgInGrayscale, self.getXStarterValue(self.__imgInGrayscale)), self.getXEndValue(self.__imgInGrayscale, self.getXStarterValue(self.__imgInGrayscale)))
-        days_between = (self.endDate - self.startDate).days)
-        for i in range (self.getXEndValue(self.__imgInGray, self.getXStarterValue(self.__imgInGrayscale)) - self.getXStarterValue(self.__imgInGrayscale)):
-            self.__values.add(i, i*pixelPerDay)
+        days_between = (self.endDate - self.startDate).days
+        print(days_between)
+        # print(self.__img)
+
+        graphStarterValue = self.getXStarterValue(self.__imgInGrayscale)
+        graphEndValue = self.getXEndValue(self.__imgInGrayscale, self.getXStarterValue(self.__imgInGrayscale))
+        pixelPerDay = self.getPixelsPerDay(graphStarterValue, graphEndValue ,days_between)
+        
+        for i in range (graphEndValue - graphStarterValue):
+            self.__values.append([i,i*pixelPerDay])  
 
     # Y-Offset always the same => Hardcode
     yStarterOffset = -72
