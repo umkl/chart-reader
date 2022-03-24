@@ -45,9 +45,6 @@ class DateAxis:
     
     def initValues(self):
         days_between = (self.endDate - self.startDate).days
-        print(days_between)
-        # print(self.__img)
-
         graphStarterValue = self.getXStarterValue(self.__imgInGrayscale)
         graphEndValue = self.getXEndValue(self.__imgInGrayscale, self.getXStarterValue(self.__imgInGrayscale))
         pixelPerDay = self.getPixelsPerDay(graphStarterValue, graphEndValue ,days_between)

@@ -11,6 +11,7 @@ class Result:
         self.__dateAxis = dateaxis
         self.__logAxis = logaxis
         self.__chart = chart
+
         self.__dateMapped = [] # array consisting of: key: pixelValX - value: date
         self.__logMapped = [] # array consisting of: key: pixelValY - value: log
         self.__fullMapped = [] # chart pixelwerte - abgezogen pixelwerte - auf dateaxis und logaxis gemapped 
@@ -27,8 +28,20 @@ class Result:
 
     def mapDate(self):
         for index, value in self.__dateAxis.values:
-            print("value: ",value, " mapped: ", self.__dateMapped[index])
-            self.__dateMapped[index] = value
+            self.__dateAxis.values[index] = [index, 22]
+        for index, value in self.__dateAxis.values:
+            print(self.__dateAxis.values[index])
+            # print("value: ",value, " mapped: ", self.__dateMapped[index])
+            # self.__dateMapped[index] = value
+
+    def simpleLogChart(self):
+        # for index, value in self.__dateAxis.values:
+        #     self.__dateMapped.append([self.__dateAxis.values[index], self.__chart.coordinates[index]])
+
+        print(self.__chart.pixelCoordinates[0])
+        # for index, value in self.__chart.coordinates:
+        #     print()
+           
 
 
     def logToCsv(self):

@@ -24,7 +24,7 @@ def main():
     # present()
 
     """log to csv by using result class"""
-    # log()
+    log()
 
 
 
@@ -32,19 +32,22 @@ def init():
     # creating a global version of the image
     global img; img = cv.imread(INPUTFILE)
     
-    # global chart; chart = Chart(img)
+    global chart; chart = Chart(img)
     global dateaxis; dateaxis = DateAxis(img)
 
-    for i, val in range(dateaxis.values):
-        print(val)
+    # print(dateaxis.values)
 
     # global logaxis; logaxis = LogAxis(img)
 
     #combining all data from all 3 sections(chart, dateaxis, logaxis) together -> applying tests, logging to csv
-    # global result; result = Result(chart, dateaxis, None)
+    global result; result = Result(chart, dateaxis, None)
+
+    
 
 def log():
-    result.mapDate()
+    # result.mapDate()
+    result.simpleLogChart()
+
 
 def present():    
     cv.imshow(INPUTFILE,img)
