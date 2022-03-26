@@ -55,7 +55,7 @@ class LogAxis:
 
         return origin_x_pos
 
-    def getYAxisValues(self):
+    def getYAxisValuesOffset(self):
         origin_x_pos = self.getOriginXPos()
         gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
         height = gray.shape[0]
@@ -70,10 +70,20 @@ class LogAxis:
 
         return axis_values
 
+    def getYAxisValues(self):
+        values = self.getYAxisValuesOffset()
+        for i in values:
+            i = i + self.originHeight
+        return values
+
+    # Confirmed working for images:
+    #   /docs/Beispiele/Run 22/00.0-25.0-30.0-20000.0-24.0-27.0-00.0-02.0-10.0-NONE.png
+    #   /docs/Beispiele/Run 22/00.0-75.0-44.0-20000.0-52.0-41.0-00.0-20.0-50.0-NONE.png
+    #   /docs/Beispiele/Run 9/00.0-08.0-79.0-80.0-100.0-80.0-01.0-12.0-06.0-NONE.png
+
     def getYAxisUnitSteps(self):
         x_pos = self.getOriginXPos() - 1
         gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
-        height = gray.shape[0]
 
         axisValues = self.__values
         axisValues.reverse()
@@ -85,14 +95,14 @@ class LogAxis:
         unitSteps = []
 
         for i in axisValues:
-            if gray[i, x_pos] != 255:
-                oldDiff = curDiff
-                curDiff = lastYValue - i
-                if curDiff > oldDiff:
-                    unitSteps.append(lastYValue)
-                lastYValue = i
+            if self.isUnitStep(gray, x_pos, i):
+                # oldDiff = curDiff
+                # curDiff = lastYValue - i
+                # if curDiff > oldDiff:
+                unitSteps.append(i)
+                # lastYValue = i
 
-        stepDiff = unitSteps[0] - unitSteps[1] # could throw an exception
+        # stepDiff = unitSteps[0] - unitSteps[1] # could throw an exception
 
         for i in unitSteps:
             self.__img[i, x_pos] = (0, 0, 255)
@@ -101,11 +111,19 @@ class LogAxis:
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-    def getYAxisValuesOffset(self):
-        values = self.getYAxisValues()
-        for i in values:
-            i = i - self.originHeight
-        return values
+    def isUnitStep(self, gray, x, y):
+        if gray[y, x] == 255:
+            return False
+
+        for i in range(1, 5):
+            if gray[y - i, x] != 255:
+                return False
+
+        if gray[y, x - 6] == 255 and gray[y, x - 8] == 255:
+            return False
+
+        return True
+
 
 
 
@@ -131,5 +149,6 @@ if __name__ == "__main__":
         for filename in files:
             if filename.endswith('.png'):
                 imgPath = os.path.join(root, filename)
+                print(imgPath)
                 axis = LogAxis(cv2.imread(imgPath))
                 axis.getYAxisUnitSteps()
