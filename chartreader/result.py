@@ -28,15 +28,22 @@ class Result:
     #         self.__fullMapped.append([self.__dateMapped[x],self.__logMapped[y]])
 
     def mapDate(self):
+        print(self.__chart.coordinates[0][0])
+
         for index, value in self.__dateAxis.values:
             try:
-                print()
-                self.__dateMapped.append([self.__dateAxis.values[index][1], self.__chart.coordinates[index][1]])
-            except IndexError:
-                self.__dateMapped.append([self.__dateAxis.values[index][0], 0])
+                print(self.__chart.coordinates[index][0])
+                if(self.__chart.coordinates[index][0] == index):
+                    self.__dateMapped.append([self.__dateAxis.values[index][1], self.__chart.coordinates[index][1]])
 
-        for index, value in self.__dateMapped:
-            print("index %s, value: %s" % (index,value))
+            except IndexError:
+                self.__dateMapped.append([self.__dateAxis.values[index][1], 0])
+
+    # def mapLogValue(self):
+        
+
+        # for index, value in self.__dateMapped:
+        #     print("index %s, value: %s" % (index,value))
 
         # print(self.__dateAxis.values[0][1])
         # print(self.__dateAxis.values[40][1])
@@ -47,13 +54,15 @@ class Result:
         #     # self.__dateMapped[index] = value
 
     def simpleLogChart(self):
-        # for index, value in self.__dateAxis.values:
-        #     self.__dateMapped.append([self.__dateAxis.values[index], self.__chart.coordinates[index]])
-
-        print(self.__chart.pixelCoordinates[0])
-        # for index, value in self.__chart.coordinates:
-        #     print()
-           
+        with open('output/1.csv', 'w', newline='\n') as f:
+            writer = csv.writer(f)
+            # for value in self.__chart.getConverted():
+            #     writer.writerow(value)
+            writer.writerow({"Tag","ChartWert"})
+            for index, value in self.__dateMapped:
+                # 'tog: %s choatWert: %s' % (index,value)
+                writer.writerow({index,value})
+        
 
 
     def logToCsv(self):
