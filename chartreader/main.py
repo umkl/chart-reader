@@ -21,7 +21,7 @@ def main():
     # testsomestuff()
 
     """display manipulated pixels using the opencv-window"""
-    # present()
+    present()
 
     """log to csv by using result class"""
     log()
@@ -45,8 +45,8 @@ def init():
     
 
 def log():
-    # result.mapDate()
-    result.simpleLogChart()
+    result.mapDate()
+    # result.simpleLogChart()
 
 
 def present():    

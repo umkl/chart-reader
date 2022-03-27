@@ -1,5 +1,6 @@
 from distutils.log import Log
 from sqlite3 import Date
+import sys
 from xaxis import DateAxis
 from yaxis import LogAxis
 from chart import Chart
@@ -28,11 +29,22 @@ class Result:
 
     def mapDate(self):
         for index, value in self.__dateAxis.values:
-            self.__dateAxis.values[index] = [index, 22]
-        for index, value in self.__dateAxis.values:
-            print(self.__dateAxis.values[index])
-            # print("value: ",value, " mapped: ", self.__dateMapped[index])
-            # self.__dateMapped[index] = value
+            try:
+                print()
+                self.__dateMapped.append([self.__dateAxis.values[index][1], self.__chart.coordinates[index][1]])
+            except IndexError:
+                self.__dateMapped.append([self.__dateAxis.values[index][0], 0])
+
+        for index, value in self.__dateMapped:
+            print("index %s, value: %s" % (index,value))
+
+        # print(self.__dateAxis.values[0][1])
+        # print(self.__dateAxis.values[40][1])
+
+        # for index, value in self.__dateAxis.values:
+        #     print(self.__dateAxis.values[index])
+        #     # print("value: ",value, " mapped: ", self.__dateMapped[index])
+        #     # self.__dateMapped[index] = value
 
     def simpleLogChart(self):
         # for index, value in self.__dateAxis.values:
