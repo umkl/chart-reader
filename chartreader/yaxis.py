@@ -1,5 +1,9 @@
+import math
 import os
 import cv2
+from pytesseract import Output
+import pytesseract
+import numpy as np
 
 # TODO (jonik): Lea braucht nur Striche bei de Zoihn
 # Spalte links von da y-Achse von unten durchgeh, Obstände zwischen graue Pixel (Logarithmus-Striche) messen.
@@ -22,6 +26,8 @@ class LogAxis:
         self.__imgPath = imgPath
         self.__values = self.getYAxisValuesOffset()
         self.__valuesNoOffset = self.getYAxisValues()
+        self.__unitSteps
+        self.__valuesUnitSteps
 
     def setValues(self, val):
         self.__values = val
@@ -75,6 +81,46 @@ class LogAxis:
         for i in values:
             i = i - self.originHeight
         return values
+
+    def setPositionOfNumbers(self):
+        # get the position of every numeric text in the image
+        results = pytesseract.image_to_data(self.__imagePath, lang="eng", config='-c tessedit_char_whitelist=01', output_type=Output.DICT)
+        img = cv2.imread(self.__imagePath)
+        origin_x_pos = self.getOriginXPos(img)
+
+        for i in range(0, len(results["text"])):
+            if(results["left"][i] + results["width"][i] < origin_x_pos):
+                top = results["top"][i]
+                height = results["height"][i]
+                number = results["text"][i]
+
+                unitStepIndex = np.where(self.__unitSteps < top & self.__unitSteps > top-height)
+                unitStep = self.__unitSteps[unitStepIndex]
+                self.__valuesUnitSteps[unitStep][number]
+
+    # Calculate value from y position with offset
+    def getValueOfPosition(self, yValue):
+        unitStepBefore = 0
+        unitStepAfter = 0
+
+        for i in range(0, len(self.__unitSteps)):
+            unitStep = self.__valuesUnitSteps.keys()[i]
+            if(unitStep == yValue): return self.__valuesUnitSteps.get(unitStep)
+            if(unitStep < yValue & (unitStep > unitStepAfter or unitStepAfter == 0)):
+                unitStepAfter = unitStep
+            if(unitStep > yValue & (unitStep < unitStepBefore or unitStepBefore == 0)):
+                unitStepBefore = unitStep
+
+        unitStepDiff = unitStepBefore - unitStepAfter
+        yDiff = yValue - unitStepAfter
+
+        valueRelation = 1 - yDiff / unitStepDiff
+        valueBefore = self.__valuesUnitSteps.get(unitStepBefore)
+        logBefore = math.log10(valueBefore)
+
+        return math.pow(10, logBefore + valueRelation)
+
+
 
 
 # 200 von xachse
