@@ -63,10 +63,10 @@ class Result:
             writer = csv.writer(f)
             # for value in self.__chart.getConverted():
             #     writer.writerow(value)
-            writer.writerow({"Tag","ChartWert"})
+            writer.writerow(["Tag","ChartWert"])
             for index, value in self.__dateMapped:
                 # 'tog: %s choatWert: %s' % (index,value)
-                writer.writerow({index,value})
+                writer.writerow([index,value])
         
 
 
