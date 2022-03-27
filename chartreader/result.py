@@ -1,4 +1,5 @@
 from distutils.log import Log
+import math
 from sqlite3 import Date
 import sys
 from xaxis import DateAxis
@@ -44,6 +45,11 @@ class Result:
             except IndexError:
                 self.__dateMapped.append([self.__dateAxis.values[index][1], 0])
 
+    def mapM(self):
+        # 10^((756+y)/255)
+        for index, value in self.__dateMapped:
+            self.__fullMapped.append((index, math.pow(10,((756+value)/255))))            
+
     # def mapLogValue(self):
         
 
@@ -64,7 +70,7 @@ class Result:
             # for value in self.__chart.getConverted():
             #     writer.writerow(value)
             writer.writerow(["Tag","ChartWert"])
-            for index, value in self.__dateMapped:
+            for index, value in self.__fullMapped:
                 # 'tog: %s choatWert: %s' % (index,value)
                 writer.writerow([index,value])
         

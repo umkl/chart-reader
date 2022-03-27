@@ -46,6 +46,7 @@ def init():
 
 def log():
     result.mapDate()
+    result.mapM()
     result.simpleLogChart()
     # result.simpleLogChart()
 
