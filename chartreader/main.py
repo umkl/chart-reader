@@ -13,10 +13,10 @@ from result import *
 # import matplotlib.pyplot as plt
 
 """called by executing python3 main.py"""
-def main(): 
+def main():
     """initialize all classes for _DI_"""
     init()
-    
+
     """trying out current functionalities"""
     # testsomestuff()
 
@@ -31,7 +31,7 @@ def main():
 def init():
     # creating a global version of the image
     global img; img = cv.imread(INPUTFILE)
-    
+
     global chart; chart = Chart(img)
     global dateaxis; dateaxis = DateAxis(img)
 
@@ -42,17 +42,18 @@ def init():
     #combining all data from all 3 sections(chart, dateaxis, logaxis) together -> applying tests, logging to csv
     global result; result = Result(chart, dateaxis, None)
 
-    
+
 
 def log():
-    # result.mapDate()
+    result.mapDate()
     result.simpleLogChart()
+    # result.simpleLogChart()
 
 
-def present():    
+def present():
     cv.imshow(INPUTFILE,img)
     cv.waitKey(0)
-    
+
     # pil for windows/macos
     #1
     # img2 = cv.cvtColor(img, cv.COLOR_BGR2RGB)
@@ -72,7 +73,7 @@ def testsomestuff():
     # extractValuesFromCoordinates()
     # drawCoordinatesOnImage()
     # result.logToCsv()
-    #testDateAxis() 
+    #testDateAxis()
 
 def drawFromChartOnImage():
     for i in chart.pixelCoordinates:
@@ -83,7 +84,7 @@ def testDateAxis():
 
 def drawCoordinatesOnImage():
     # cv.line(img,(0,0),(511,511),(255,0,0),5)
-    
+
     for val in chart.getConverted():
 
         img[val[1], val[0]] = [255,150,180] # img[y,x] - flipped format
@@ -108,12 +109,12 @@ def extractValuesFromCoordinates():
     # print(getFragValuesBetween(0.2,10,12,100,120))
     # k = sy.S('k')
     # d = sy.S('d')
-    # k,d = getLinearFunctionFromCoo([10,12],[100, 120])    
+    # k,d = getLinearFunctionFromCoo([10,12],[100, 120])
     # print(d.values())
     # x = sy.S('x')
     # sol = sy.solve( sy.Eq(1000, 3*x -1) )
     # print(sol[0]*2)
-    # print(chart.pixelCoordinates)    
+    # print(chart.pixelCoordinates)
     # print(getFragValuesBetween(0.1,10,20,100,200))
     # img[150:200,10:100] = [255,100,250]
     # cv.imshow('ex1',img)
@@ -125,4 +126,3 @@ def extractValuesFromCoordinates():
 # makes the file importable, so code does not get executed by importing our lib
 if __name__ == "__main__":
     main()
-

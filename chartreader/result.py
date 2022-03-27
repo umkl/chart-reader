@@ -1,5 +1,6 @@
 from distutils.log import Log
 from sqlite3 import Date
+import sys
 from xaxis import DateAxis
 from yaxis import LogAxis
 from chart import Chart
@@ -14,34 +15,59 @@ class Result:
 
         self.__dateMapped = [] # array consisting of: key: pixelValX - value: date
         self.__logMapped = [] # array consisting of: key: pixelValY - value: log
-        self.__fullMapped = [] # chart pixelwerte - abgezogen pixelwerte - auf dateaxis und logaxis gemapped 
-        
+        self.__fullMapped = [] # chart pixelwerte - abgezogen pixelwerte - auf dateaxis und logaxis gemapped
+
 
     # def mapOlles(self):
     #     for index, value in self.__dateAxis.values:
     #         self.__dateMapped[index] = value
     #     for index, value in self.__logAxis.values:
     #         self.__logMapped[index] = value
-        
+
     #     for x, y in self.__chart.coordinates: # x ought to be the key and y the value
     #         self.__fullMapped.append([self.__dateMapped[x],self.__logMapped[y]])
 
     def mapDate(self):
+        print(self.__chart.coordinates[0][0])
+
+
         for index, value in self.__dateAxis.values:
-            self.__dateAxis.values[index] = [index, 22]
-        for index, value in self.__dateAxis.values:
-            print(self.__dateAxis.values[index])
-            # print("value: ",value, " mapped: ", self.__dateMapped[index])
-            # self.__dateMapped[index] = value
+            try:
+                # print(self.__chart.coordinates[index][0])
+                # if(self.__chart.coordinates[index][0] == self.__dateAxis.values[index][0]):
+                dataxval = self.__dateAxis.values[index][1]
+                doesExist = (self.__chart.coordinates[index][0] == index)
+                cochind = self.__chart.coordinates[24][1]
+                cochval = self.__chart.coordinates[index][1]
+                self.__dateMapped.append([self.__dateAxis.values[index][1], self.__chart.coordinates[index][1]])
+
+            except IndexError:
+                self.__dateMapped.append([self.__dateAxis.values[index][1], 0])
+
+    # def mapLogValue(self):
+
+
+        # for index, value in self.__dateMapped:
+        #     print("index %s, value: %s" % (index,value))
+
+        # print(self.__dateAxis.values[0][1])
+        # print(self.__dateAxis.values[40][1])
+
+        # for index, value in self.__dateAxis.values:
+        #     print(self.__dateAxis.values[index])
+        #     # print("value: ",value, " mapped: ", self.__dateMapped[index])
+        #     # self.__dateMapped[index] = value
 
     def simpleLogChart(self):
-        # for index, value in self.__dateAxis.values:
-        #     self.__dateMapped.append([self.__dateAxis.values[index], self.__chart.coordinates[index]])
+        with open('output/1.csv', 'w', newline='\n') as f:
+            writer = csv.writer(f)
+            # for value in self.__chart.getConverted():
+            #     writer.writerow(value)
+            writer.writerow({"Tag","ChartWert"})
+            for index, value in self.__dateMapped:
+                # 'tog: %s choatWert: %s' % (index,value)
+                writer.writerow({index,value})
 
-        print(self.__chart.pixelCoordinates[0])
-        # for index, value in self.__chart.coordinates:
-        #     print()
-           
 
 
     def logToCsv(self):
@@ -51,3 +77,4 @@ class Result:
             #     writer.writerow(value)
             for value in self.__fullMapped():
                 writer.writerow(value)
+                
