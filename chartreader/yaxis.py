@@ -84,6 +84,8 @@ class LogAxis:
             if self.isUnitStep(x_pos, i):
                 unit_steps.append(i)
 
+        return unit_steps
+
     def isUnitStep(self, x, y):
         if self.__gray[y, x] == 255:
             return False
@@ -119,4 +121,4 @@ if __name__ == "__main__":
             if filename.endswith('.png'):
                 imgPath = os.path.join(root, filename)
                 axis = LogAxis(cv2.imread(imgPath))
-                axis.getYAxisValuesOffset()
+                axis.getYAxisUnitSteps()

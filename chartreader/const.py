@@ -1,5 +1,5 @@
-INPUTFILE='./input/2.png'
-OUTUPUTFILE='./input/1.png'
+INPUTFILE='./input/1.png'
+OUTPUTFILE='./output/1.csv'
 XINDENT=102
 YINDENT=648
 YINDENTTOP=94
