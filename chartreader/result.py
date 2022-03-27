@@ -30,11 +30,16 @@ class Result:
     def mapDate(self):
         print(self.__chart.coordinates[0][0])
 
+
         for index, value in self.__dateAxis.values:
             try:
-                print(self.__chart.coordinates[index][0])
-                if(self.__chart.coordinates[index][0] == index):
-                    self.__dateMapped.append([self.__dateAxis.values[index][1], self.__chart.coordinates[index][1]])
+                # print(self.__chart.coordinates[index][0])
+                # if(self.__chart.coordinates[index][0] == self.__dateAxis.values[index][0]):
+                dataxval = self.__dateAxis.values[index][1]
+                doesExist = (self.__chart.coordinates[index][0] == index)
+                cochind = self.__chart.coordinates[24][1]
+                cochval = self.__chart.coordinates[index][1]
+                self.__dateMapped.append([self.__dateAxis.values[index][1], self.__chart.coordinates[index][1]])
 
             except IndexError:
                 self.__dateMapped.append([self.__dateAxis.values[index][1], 0])
