@@ -66,10 +66,10 @@ class Result:
 
     def simpleLogChart(self):
         with open('output/1.csv', 'w', newline='\n') as f:
-            writer = csv.writer(f)
+            writer = csv.writer(f, delimiter=';')
             # for value in self.__chart.getConverted():
             #     writer.writerow(value)
-            writer.writerow(["Tag","ChartWert"])
+            writer.writerow(["Day","Log-Value"])
             for index, value in self.__fullMapped:
                 # 'tog: %s choatWert: %s' % (index,value)
                 writer.writerow([index,value])
