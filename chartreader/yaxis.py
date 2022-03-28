@@ -1,9 +1,9 @@
 import math
-import os
 import cv2
 from pytesseract import Output
 import pytesseract
-import numpy as np
+
+
 pytesseract.pytesseract.tesseract_cmd =  r'C:\Users\Lea\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
 class LogAxis:
@@ -107,42 +107,43 @@ class LogAxis:
         return True
 
     def getPositionOfNumbers(self):
-        # get the position of every numeric text in the image
-        results = pytesseract.image_to_data(self.__imgPath, lang="eng", config='-c tessedit_char_whitelist=01.',
-                                            output_type=Output.DICT)
+        img = cv2.resize(self.__img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+        results = pytesseract.image_to_data(img, config='-c tessedit_char_whitelist=01.',
+                                        output_type=Output.DICT)
         origin_x_pos = self.getOriginXPos()
         values_unit_steps = {}
 
         for i in range(0, len(results["text"])):
-            if (results["left"][i] + results["width"][i] < origin_x_pos):
-                top = results["top"][i]
-                height = results["height"][i]
+            if ((results["left"][i] + results["width"][i]) / 3 < origin_x_pos):
                 number = results["text"][i]
+                if(number != ''):
+                    print(number)
+                    top = int(results["top"][i]/3)
+                    height = int(results["height"][i]/3)
 
-                unitStepIndex = np.where(self.__unitSteps < top & self.__unitSteps > top + height)
-                unitStep = self.__unitSteps[unitStepIndex]
-                values_unit_steps[unitStep] = number
+                    unitStep = next(filter(lambda x: x > top and x < top + height, self.__unitSteps))
+                    values_unit_steps[unitStep] = number
 
         return values_unit_steps
 
     # Calculate value from y position with offset
     def getValueOfPosition(self, yValue):
-        unitStepBefore = 0
-        unitStepAfter = 0
+        unitStepBefore = self.__unitSteps[0]
+        unitStepAfter = self.__unitSteps[-1]
 
-        for i in range(0, len(self.__unitSteps)):
-            unitStep = self.__valuesUnitSteps.keys()[i]
+        for i in range(0, len(self.__valuesUnitSteps)):
+            unitStep = list(self.__valuesUnitSteps.keys())[i]
             if (unitStep == yValue): return self.__valuesUnitSteps.get(unitStep)
-            if (unitStep < yValue & (unitStep > unitStepAfter or unitStepAfter == 0)):
+            if (unitStep < yValue and (unitStep > unitStepAfter or unitStepAfter == 0)):
                 unitStepAfter = unitStep
-            if (unitStep > yValue & (unitStep < unitStepBefore or unitStepBefore == 0)):
+            if (unitStep > yValue and (unitStep < unitStepBefore or unitStepBefore == 0)):
                 unitStepBefore = unitStep
 
         unitStepDiff = unitStepBefore - unitStepAfter
         yDiff = yValue - unitStepAfter
 
         valueRelation = 1 - yDiff / unitStepDiff
-        valueBefore = self.__valuesUnitSteps.get(unitStepBefore)
+        valueBefore = float(self.__valuesUnitSteps.get(unitStepBefore))
         logBefore = math.log10(valueBefore)
 
         return math.pow(10, logBefore + valueRelation)
@@ -172,5 +173,5 @@ if __name__ == "__main__":
     #             axis.getYAxisUnitSteps()
     imgPath = '../docs/Beispiele/Run 22/00.0-15.0-02.0-20000.0-10.0-20.0-00.0-02.0-10.0-NONE.png'
     axis = LogAxis(imgPath)
-    axis.getValueOfPosition(308)
+    print(axis.getValueOfPosition(263))
 
