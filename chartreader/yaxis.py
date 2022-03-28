@@ -23,8 +23,8 @@ class LogAxis:
         self.__gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         self.__values = self.getYAxisValuesOffset()
         self.__valuesNoOffset = self.getYAxisValues()
-        self.__unitSteps
-        self.__valuesUnitSteps
+        self.__unitSteps = self.getYAxisUnitSteps()
+        self.__valuesUnitSteps = self.getPositionOfNumbers()
 
     def setValues(self, val):
         self.__values = val
@@ -105,12 +105,12 @@ class LogAxis:
 
         return True
 
-    def setPositionOfNumbers(self):
+    def getPositionOfNumbers(self):
         # get the position of every numeric text in the image
         results = pytesseract.image_to_data(self.__imagePath, lang="eng", config='-c tessedit_char_whitelist=01',
                                             output_type=Output.DICT)
-        img = cv2.imread(self.__imagePath)
-        origin_x_pos = self.getOriginXPos(img)
+        origin_x_pos = self.getOriginXPos()
+        values_unit_steps = {}
 
         for i in range(0, len(results["text"])):
             if (results["left"][i] + results["width"][i] < origin_x_pos):
@@ -118,12 +118,13 @@ class LogAxis:
                 height = results["height"][i]
                 number = results["text"][i]
 
-                unitStepIndex = np.where(self.__unitSteps < top & self.__unitSteps > top - height)
+                unitStepIndex = np.where(self.__unitSteps < top & self.__unitSteps > top + height)
                 unitStep = self.__unitSteps[unitStepIndex]
-                self.__valuesUnitSteps[unitStep][number]
+                values_unit_steps[unitStep] = number
 
-        # Calculate value from y position with offset
+        return values_unit_steps
 
+    # Calculate value from y position with offset
     def getValueOfPosition(self, yValue):
         unitStepBefore = 0
         unitStepAfter = 0
@@ -168,3 +169,4 @@ if __name__ == "__main__":
                 imgPath = os.path.join(root, filename)
                 axis = LogAxis(cv2.imread(imgPath))
                 axis.getYAxisUnitSteps()
+
