@@ -1,5 +1,7 @@
 import os
 import cv2
+import pytesseract
+pytesseract.pytesseract.tesseract_cmd =  r'C:\Users\Lea\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
 
 class LogAxis:
@@ -114,11 +116,67 @@ class LogAxis:
 
 # x = 100
 
+<<<<<<< HEAD
+=======
+
+# look at origin pixel to determine whether it is actually the origin
+# we cannot expect the origin to be on the same x-coordinate, due to values of varying lengths on the y-axis' legend
+
+# originYPos = -72. pixel von links unten
+# originHexVal = '#b0b0b0'
+
+def getOriginXPos(img):
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    width = gray.shape[1]
+    origin_x_pos = -1
+    for i in range(width):
+        if gray[-72, i] == 178:
+            origin_x_pos = i
+
+    return origin_x_pos
+
+
+def getYAxisValues(img):
+    origin_x_pos = getOriginXPos(img)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    height = gray.shape[0]
+
+    axis_end_y = -1
+    for i in range(height - 72, 0, -1):
+        if gray[i, origin_x_pos] == 255:
+            axis_end_y = i
+            break
+
+    axis_values = range(axis_end_y, height - 71)
+    return axis_values
+
+def positionOfNumbers(imgPath):
+    # get the position of every numeric text in the image
+    results = pytesseract.image_to_data(imgPath, lang="eng", config='-c tessedit_char_whitelist=0123456789')
+
+    for i in range(0, len(results["text"])):
+        # extract the bounding box coordinates of the text region from
+        # the current result
+        top = results["top"][i]
+        height = results["height"][i]
+        # extract the OCR text itself along with the confidence of the
+        # text localization
+        number = float(results["text"][i])
+        print(number);
+
+>>>>>>> origin/LeaLena
 # hobs do eine do, damits nd beim import ausgführt wird
 if __name__ == "__main__":
     for root, dirs, files in os.walk('../docs/Beispiele'):
         for filename in files:
             if filename.endswith('.png'):
+<<<<<<< HEAD
                 imgPath = os.path.join(root, filename)
                 axis = LogAxis(cv2.imread(imgPath))
                 axis.getYAxisUnitSteps()
+=======
+                img = cv2.imread(os.path.join(root, filename))
+                yValues = getYAxisValues(img)
+                print('Y-Axis in image ' + filename + ' is represented by the following pixels: ' + str(yValues))
+
+>>>>>>> origin/LeaLena
