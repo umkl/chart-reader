@@ -64,7 +64,7 @@ class Chart:
     def __init__(self,img):
         # self.__img = img
         self.__pixelCoordinates = []
-        self.__coordiantes = []
+        self.__coordinates = []
 
         #retriving pixel values by bluest value
         self.definePixelCoordinates(img)

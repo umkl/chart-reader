@@ -5,9 +5,6 @@ from pytesseract import Output
 import pytesseract
 import numpy as np
 
-# TODO (jonik): Lea braucht nur Striche bei de Zoihn
-# Spalte links von da y-Achse von unten durchgeh, Obstände zwischen graue Pixel (Logarithmus-Striche) messen.
-# Soboid da Obstond greßa is ois da vorherige, wiss ma, dass do a Zoih daneben steht und speichern den y-Wert von dem Strich fiad Lea.
 
 class LogAxis:
     """
@@ -18,12 +15,12 @@ class LogAxis:
         valuesNoOffset {[number, number]} -- list for log-values on each row/y-axis or preciser with no Offset (according to pixel values on image)
     """
 
-    originHeight = -72
-    originGrayVal = 178
+    originHeight = 72  # vertical distance from y=height to x-axis. must be negated (-72 = 72 from bottom)
+    originGrayVal = 178  # grayscale value for the origin pixel
 
-    def __init__(self, imgPath):
-        self.__img = cv2.imread(imgPath)
-        self.__imgPath = imgPath
+    def __init__(self, img):
+        self.__img = img
+        self.__gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         self.__values = self.getYAxisValuesOffset()
         self.__valuesNoOffset = self.getYAxisValues()
         self.__unitSteps
@@ -52,63 +49,91 @@ class LogAxis:
     valuesNoOffset = property(fget=getValuesNoOffset, fset=setValuesNoOffset, fdel=delValuesNoOffset, doc=None)
 
     def getOriginXPos(self):
-        gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
-        width = gray.shape[1]
-        origin_x_pos = -1
+        width = self.__gray.shape[1]
+
         for i in range(width):
-            if gray[self.originHeight, i] == self.originGrayVal:
-                origin_x_pos = i
+            if self.__gray[-self.originHeight, i] == self.originGrayVal:
+                return i
 
-        return origin_x_pos
-
-    def getYAxisValues(self):
+    def getYAxisValuesOffset(self):
         origin_x_pos = self.getOriginXPos()
-        gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
-        height = gray.shape[0]
+        height = self.__gray.shape[0]
 
         axis_end_y = -1
-        for i in range(height + self.originHeight, 0, -1): # Spalte von da y-Achse wird von unten noch oben durch gonga (Werte umdraht weil links oben = 0/0, height + weil originHeight negativ)
-            if gray[i, origin_x_pos] == 255: # Wonn d Achse aufhead, oiso da Grauwert s erste moi weiß is
-                axis_end_y = i
+        for i in range(height - self.originHeight, 0, -1):
+            # Spalte von da y-Achse wird von unten noch oben durch gonga (Werte umdraht weil links oben = 0/0)
+            if self.__gray[i, origin_x_pos] == 255:  # Wonn d Achse aufhead, oiso da Grauwert s erste moi weiß is
+                axis_end_y = i + 1
                 break
 
-        axis_values = range(axis_end_y, height - (self.originHeight + 1))
+        axis_values = [*range(axis_end_y, height - self.originHeight + 1)]
 
         return axis_values
 
-    def getYAxisValuesOffset(self):
-        values = self.getYAxisValues()
+    def getYAxisValues(self):  # relative to origin height (0 in result = -72 in image)
+        values = self.getYAxisValuesOffset()
+
         for i in values:
             i = i - self.originHeight
+
         return values
+
+    def getYAxisUnitSteps(self):
+        x_pos = self.getOriginXPos() - 1
+
+        axis_values = self.__values
+        axis_values.reverse()
+
+        unit_steps = []
+
+        for i in axis_values:
+            if self.isUnitStep(x_pos, i):
+                unit_steps.append(i)
+
+        return unit_steps
+
+    def isUnitStep(self, x, y):
+        if self.__gray[y, x] == 255:
+            return False
+
+        for i in range(1, 5):
+            if self.__gray[y - i, x] != 255:
+                return False
+
+        if self.__gray[y, x - 6] == 255 and self.__gray[y, x - 8] == 255:
+            return False
+
+        return True
 
     def setPositionOfNumbers(self):
         # get the position of every numeric text in the image
-        results = pytesseract.image_to_data(self.__imagePath, lang="eng", config='-c tessedit_char_whitelist=01', output_type=Output.DICT)
+        results = pytesseract.image_to_data(self.__imagePath, lang="eng", config='-c tessedit_char_whitelist=01',
+                                            output_type=Output.DICT)
         img = cv2.imread(self.__imagePath)
         origin_x_pos = self.getOriginXPos(img)
 
         for i in range(0, len(results["text"])):
-            if(results["left"][i] + results["width"][i] < origin_x_pos):
+            if (results["left"][i] + results["width"][i] < origin_x_pos):
                 top = results["top"][i]
                 height = results["height"][i]
                 number = results["text"][i]
 
-                unitStepIndex = np.where(self.__unitSteps < top & self.__unitSteps > top-height)
+                unitStepIndex = np.where(self.__unitSteps < top & self.__unitSteps > top - height)
                 unitStep = self.__unitSteps[unitStepIndex]
                 self.__valuesUnitSteps[unitStep][number]
 
-    # Calculate value from y position with offset
+        # Calculate value from y position with offset
+
     def getValueOfPosition(self, yValue):
         unitStepBefore = 0
         unitStepAfter = 0
 
         for i in range(0, len(self.__unitSteps)):
             unitStep = self.__valuesUnitSteps.keys()[i]
-            if(unitStep == yValue): return self.__valuesUnitSteps.get(unitStep)
-            if(unitStep < yValue & (unitStep > unitStepAfter or unitStepAfter == 0)):
+            if (unitStep == yValue): return self.__valuesUnitSteps.get(unitStep)
+            if (unitStep < yValue & (unitStep > unitStepAfter or unitStepAfter == 0)):
                 unitStepAfter = unitStep
-            if(unitStep > yValue & (unitStep < unitStepBefore or unitStepBefore == 0)):
+            if (unitStep > yValue & (unitStep < unitStepBefore or unitStepBefore == 0)):
                 unitStepBefore = unitStep
 
         unitStepDiff = unitStepBefore - unitStepAfter
@@ -119,8 +144,6 @@ class LogAxis:
         logBefore = math.log10(valueBefore)
 
         return math.pow(10, logBefore + valueRelation)
-
-
 
 
 # 200 von xachse
@@ -143,6 +166,5 @@ if __name__ == "__main__":
         for filename in files:
             if filename.endswith('.png'):
                 imgPath = os.path.join(root, filename)
-                axis = LogAxis(imgPath)
-                yValues = axis.getYAxisValues()
-                print('Y-Axis in image ' + filename + ' is represented by the following pixels: ' + str(yValues))
+                axis = LogAxis(cv2.imread(imgPath))
+                axis.getYAxisUnitSteps()
