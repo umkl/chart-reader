@@ -4,7 +4,7 @@ import cv2
 from pytesseract import Output
 import pytesseract
 import numpy as np
-
+pytesseract.pytesseract.tesseract_cmd =  r'C:\Users\Lea\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
 class LogAxis:
     """
@@ -108,7 +108,7 @@ class LogAxis:
 
     def getPositionOfNumbers(self):
         # get the position of every numeric text in the image
-        results = pytesseract.image_to_data(self.__imagePath, lang="eng", config='-c tessedit_char_whitelist=01',
+        results = pytesseract.image_to_data(self.__imgPath, lang="eng", config='-c tessedit_char_whitelist=01.',
                                             output_type=Output.DICT)
         origin_x_pos = self.getOriginXPos()
         values_unit_steps = {}
@@ -164,10 +164,13 @@ class LogAxis:
 
 # hobs do eine do, damits nd beim import ausgführt wird
 if __name__ == "__main__":
-    for root, dirs, files in os.walk('../docs/Beispiele'):
-        for filename in files:
-            if filename.endswith('.png'):
-                imgPath = os.path.join(root, filename)
-                axis = LogAxis(cv2.imread(imgPath))
-                axis.getYAxisUnitSteps()
+    # for root, dirs, files in os.walk('../docs/Beispiele'):
+    #     for filename in files:
+    #         if filename.endswith('.png'):
+    #             imgPath = os.path.join(root, filename)
+    #             axis = LogAxis(imgPath)
+    #             axis.getYAxisUnitSteps()
+    imgPath = '../docs/Beispiele/Run 22/00.0-15.0-02.0-20000.0-10.0-20.0-00.0-02.0-10.0-NONE.png'
+    axis = LogAxis(imgPath)
+    axis.getValueOfPosition(308)
 
