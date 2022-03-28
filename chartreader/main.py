@@ -34,10 +34,10 @@ def init():
 
     global chart; chart = Chart(img)
     global dateaxis; dateaxis = DateAxis(img)
+    # global logaxis; logaxis = LogAxis(img)
 
     # print(dateaxis.values)
 
-    # global logaxis; logaxis = LogAxis(img)
 
     #combining all data from all 3 sections(chart, dateaxis, logaxis) together -> applying tests, logging to csv
     global result; result = Result(chart, dateaxis, None)
@@ -69,7 +69,11 @@ def present():
 
 """test functions:"""
 def testsomestuff():
-    drawFromChartOnImage()
+    for index, value in range(logaxis.values):
+        print(value)
+        # print("index: %s, value: %s" % [index, value])
+
+    # drawFromChartOnImage()
     # print(getLinearFunctionFromCoo([100,120],[101, 130]))
     # extractValuesFromCoordinates()
     # drawCoordinatesOnImage()

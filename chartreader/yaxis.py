@@ -107,6 +107,8 @@ class LogAxis:
 # 255*log(wert)=y
 # wert= 10^((1000+y)/255)
 # wert = 10^((756+y)/255)
+# wert = 10^((offset from bottom+y)/pixelheightofonecolumn)
+
 
 # 0 = 648
 # 1 = 639
@@ -116,8 +118,6 @@ class LogAxis:
 
 # x = 100
 
-<<<<<<< HEAD
-=======
 
 # look at origin pixel to determine whether it is actually the origin
 # we cannot expect the origin to be on the same x-coordinate, due to values of varying lengths on the y-axis' legend
@@ -164,19 +164,12 @@ def positionOfNumbers(imgPath):
         number = float(results["text"][i])
         print(number);
 
->>>>>>> origin/LeaLena
 # hobs do eine do, damits nd beim import ausgführt wird
 if __name__ == "__main__":
     for root, dirs, files in os.walk('../docs/Beispiele'):
         for filename in files:
             if filename.endswith('.png'):
-<<<<<<< HEAD
-                imgPath = os.path.join(root, filename)
-                axis = LogAxis(cv2.imread(imgPath))
-                axis.getYAxisUnitSteps()
-=======
                 img = cv2.imread(os.path.join(root, filename))
                 yValues = getYAxisValues(img)
                 print('Y-Axis in image ' + filename + ' is represented by the following pixels: ' + str(yValues))
 
->>>>>>> origin/LeaLena

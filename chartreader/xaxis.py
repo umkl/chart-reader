@@ -1,7 +1,7 @@
 import os
 
 import cv2
-from datetime import date
+from datetime import date, datetime
 
 
 class DateAxis:
@@ -56,6 +56,7 @@ class DateAxis:
     yStarterOffset = -72
     # startDate always the same => Hardcode
     startDate = date(2018, 1, 1)
+    startDateTime = datetime(2018, 1, 1,0,0,0)
     # endDate always the same => Hardcode
     endDate = date(2021, 3, 1)
 

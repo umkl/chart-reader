@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from distutils.log import Log
 import math
 from sqlite3 import Date
@@ -69,10 +70,17 @@ class Result:
             writer = csv.writer(f, delimiter=';')
             # for value in self.__chart.getConverted():
             #     writer.writerow(value)
-            writer.writerow(["Day","Log-Value"])
+            writer.writerow(["DATE","BALANCE USD"])
             for index, value in self.__fullMapped:
                 # 'tog: %s choatWert: %s' % (index,value)
-                writer.writerow([index,value])
+                # 02.01.2018 15:00
+
+                days = index
+                start = self.__dateAxis.startDateTime
+                delta = timedelta(days) 
+                offset = start + delta 
+
+                writer.writerow([offset.strftime("%m/%d/%Y, %H:%M"),value])
         
 
 

@@ -69,6 +69,7 @@ class Chart:
         #retriving pixel values by bluest value
         self.definePixelCoordinates(img)
         self.defineCoordinatesByPixelCoordinates(self.pixelCoordinates)
+   
     def setcoordinates(self, coordinates):
         self.__coordinates = coordinates
     def getcoordinates(self):
