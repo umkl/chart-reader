@@ -1,12 +1,10 @@
-from datetime import date, timedelta
-from distutils.log import Log
+import csv
 import math
-from sqlite3 import Date
-import sys
+from datetime import timedelta
+
+from chart import Chart
 from xaxis import DateAxis
 from yaxis import LogAxis
-from chart import Chart
-import csv
 
 
 class Result:
@@ -15,23 +13,21 @@ class Result:
         self.__logAxis = logaxis
         self.__chart = chart
 
-        self.__dateMapped = [] # array consisting of: key: pixelValX - value: date
-        self.__logMapped = [] # array consisting of: key: pixelValY - value: log
-        self.__fullMapped = [] # chart pixelwerte - abgezogen pixelwerte - auf dateaxis und logaxis gemapped 
-        
+        self.__dateMapped = []  # array consisting of: key: pixelValX - value: date
+        self.__logMapped = []  # array consisting of: key: pixelValY - value: log
+        self.__fullMapped = []  # chart pixelwerte - abgezogen pixelwerte - auf dateaxis und logaxis gemapped
 
     # def mapOlles(self):
     #     for index, value in self.__dateAxis.values:
     #         self.__dateMapped[index] = value
     #     for index, value in self.__logAxis.values:
     #         self.__logMapped[index] = value
-        
+
     #     for x, y in self.__chart.coordinates: # x ought to be the key and y the value
     #         self.__fullMapped.append([self.__dateMapped[x],self.__logMapped[y]])
 
     def mapDate(self):
         print(self.__chart.coordinates[0][0])
-
 
         for index, valuePair in self.__chart.coordinates:
             try:
@@ -49,10 +45,9 @@ class Result:
     def mapM(self):
         # 10^((756+y)/255)
         for index, value in self.__dateMapped:
-            self.__fullMapped.append((index, math.pow(10,((756+value)/255))))            
+            self.__fullMapped.append((index, math.pow(10, ((756 + value) / 255))))
 
-    # def mapLogValue(self):
-        
+            # def mapLogValue(self):
 
         # for index, value in self.__dateMapped:
         #     print("index %s, value: %s" % (index,value))
@@ -70,24 +65,22 @@ class Result:
             writer = csv.writer(f, delimiter=';')
             # for value in self.__chart.getConverted():
             #     writer.writerow(value)
-            writer.writerow(["DATE","BALANCE USD"])
+            writer.writerow(["DATE", "BALANCE USD"])
             for index, value in self.__fullMapped:
                 # 'tog: %s choatWert: %s' % (index,value)
                 # 02.01.2018 15:00
 
                 days = index
                 start = self.__dateAxis.startDateTime
-                delta = timedelta(days) 
-                offset = start + delta 
+                delta = timedelta(days)
+                offset = start + delta
 
-                writer.writerow([offset.strftime("%m/%d/%Y, %H:%M"),value])
-        
-
+                writer.writerow([offset.strftime("%d.%m.%Y %H:%M"), value])
 
     def logToCsv(self):
         with open('output/1.csv', 'w') as f:
             writer = csv.writer(f)
             # for value in self.__chart.getConverted():
             #     writer.writerow(value)
-            for value in self.__fullMapped():
+            for value in self.__fullMapped:
                 writer.writerow(value)
