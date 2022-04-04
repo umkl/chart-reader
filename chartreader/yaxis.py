@@ -1,8 +1,8 @@
-import os
+import math
 import cv2
+from pytesseract import Output
 import pytesseract
 pytesseract.pytesseract.tesseract_cmd =  r'C:\Users\Lea\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
-
 
 class LogAxis:
     """
@@ -16,11 +16,14 @@ class LogAxis:
     originHeight = 72  # vertical distance from y=height to x-axis. must be negated (-72 = 72 from bottom)
     originGrayVal = 178  # grayscale value for the origin pixel
 
-    def __init__(self, img):
-        self.__img = img
-        self.__gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    def __init__(self, imgPath):
+        self.__imgPath = imgPath
+        self.__img = cv2.imread(imgPath)
+        self.__gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
         self.__values = self.getYAxisValuesOffset()
         self.__valuesNoOffset = self.getYAxisValues()
+        self.__unitSteps = self.getYAxisUnitSteps()
+        self.__valuesUnitSteps = self.getPositionOfNumbers()
 
     def setValues(self, val):
         self.__values = val
@@ -101,6 +104,47 @@ class LogAxis:
 
         return True
 
+    def getPositionOfNumbers(self):
+        img = cv2.resize(self.__img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+        results = pytesseract.image_to_data(img, config='-c tessedit_char_whitelist=01.',
+                                        output_type=Output.DICT)
+        origin_x_pos = self.getOriginXPos()
+        values_unit_steps = {}
+
+        for i in range(0, len(results["text"])):
+            if ((results["left"][i] + results["width"][i]) / 3 < origin_x_pos):
+                number = results["text"][i]
+                if(number != ''):
+                    top = int(results["top"][i]/3)
+                    height = int(results["height"][i]/3)
+
+                    unitStep = next(filter(lambda x: x > top and x < top + height, self.__unitSteps))
+                    values_unit_steps[unitStep] = number
+
+        return values_unit_steps
+
+    # Calculate value from y position with offset
+    def getValueOfPosition(self, yValue):
+        unitStepBefore = self.__unitSteps[0]
+        unitStepAfter = self.__unitSteps[-1]
+
+        for i in range(0, len(self.__valuesUnitSteps)):
+            unitStep = list(self.__valuesUnitSteps.keys())[i]
+            if (unitStep == yValue): return self.__valuesUnitSteps.get(unitStep)
+            if (unitStep < yValue and (unitStep > unitStepAfter or unitStepAfter == 0)):
+                unitStepAfter = unitStep
+            if (unitStep > yValue and (unitStep < unitStepBefore or unitStepBefore == 0)):
+                unitStepBefore = unitStep
+
+        unitStepDiff = unitStepBefore - unitStepAfter
+        yDiff = yValue - unitStepAfter
+
+        valueRelation = 1 - yDiff / unitStepDiff
+        valueBefore = float(self.__valuesUnitSteps.get(unitStepBefore))
+        logBefore = math.log10(valueBefore)
+
+        return math.pow(10, logBefore + valueRelation)
+
 
 # 200 von xachse
 # 255 * log()
@@ -125,51 +169,16 @@ class LogAxis:
 # originYPos = -72. pixel von links unten
 # originHexVal = '#b0b0b0'
 
-def getOriginXPos(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    width = gray.shape[1]
-    origin_x_pos = -1
-    for i in range(width):
-        if gray[-72, i] == 178:
-            origin_x_pos = i
-
-    return origin_x_pos
-
-
-def getYAxisValues(img):
-    origin_x_pos = getOriginXPos(img)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    height = gray.shape[0]
-
-    axis_end_y = -1
-    for i in range(height - 72, 0, -1):
-        if gray[i, origin_x_pos] == 255:
-            axis_end_y = i
-            break
-
-    axis_values = range(axis_end_y, height - 71)
-    return axis_values
-
-def positionOfNumbers(imgPath):
-    # get the position of every numeric text in the image
-    results = pytesseract.image_to_data(imgPath, lang="eng", config='-c tessedit_char_whitelist=0123456789')
-
-    for i in range(0, len(results["text"])):
-        # extract the bounding box coordinates of the text region from
-        # the current result
-        top = results["top"][i]
-        height = results["height"][i]
-        # extract the OCR text itself along with the confidence of the
-        # text localization
-        number = float(results["text"][i])
-        print(number);
 
 # hobs do eine do, damits nd beim import ausgführt wird
 if __name__ == "__main__":
-    for root, dirs, files in os.walk('../docs/Beispiele'):
-        for filename in files:
-            if filename.endswith('.png'):
-                img = cv2.imread(os.path.join(root, filename))
-                yValues = getYAxisValues(img)
-                print('Y-Axis in image ' + filename + ' is represented by the following pixels: ' + str(yValues))
+    # for root, dirs, files in os.walk('../docs/Beispiele'):
+    #     for filename in files:
+    #         if filename.endswith('.png'):
+    #             imgPath = os.path.join(root, filename)
+    #             axis = LogAxis(imgPath)
+    #             axis.getYAxisUnitSteps()
+    imgPath = '../docs/Beispiele/Run 22/00.0-15.0-02.0-20000.0-10.0-20.0-00.0-02.0-10.0-NONE.png'
+    axis = LogAxis(imgPath)
+    print(axis.getValueOfPosition(263))
 
