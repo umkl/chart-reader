@@ -117,7 +117,6 @@ class LogAxis:
             if ((results["left"][i] + results["width"][i]) / 3 < origin_x_pos):
                 number = results["text"][i]
                 if(number != ''):
-                    print(number)
                     top = int(results["top"][i]/3)
                     height = int(results["height"][i]/3)
 
