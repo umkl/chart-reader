@@ -42,7 +42,7 @@ class DateAxis:
     valuesNoOffset = property(fget=getValuesNoOffset, fset=setValuesNoOffset, fdel=delValuesNoOffset, doc=None)
 
     def initValues(self):
-        days_between = (self.startDateTime - self.endDateTime).days
+        days_between = (self.endDateTime - self.startDateTime).days
         graph_starter_value = self.getXStarterValue(self.__imgInGrayscale)
         graph_end_value = self.getXEndValue(self.__imgInGrayscale, self.getXStarterValue(self.__imgInGrayscale))
         pixel_per_day = getPixelsPerDay(graph_starter_value, graph_end_value, days_between)
