@@ -180,5 +180,5 @@ if __name__ == "__main__":
     #             axis.getYAxisUnitSteps()
     imgPath = '../docs/Beispiele/Run 22/00.0-15.0-02.0-20000.0-10.0-20.0-00.0-02.0-10.0-NONE.png'
     axis = LogAxis(imgPath)
-    print(axis.getValueOfPosition(263))
+    print(axis.getValueOfPosition(110))
 
