@@ -1,3 +1,9 @@
+"""python imports"""
+import sys
+import os
+
+import cv2
+
 """3rd imports"""
 import numpy
 import cv2 as cv
@@ -9,39 +15,53 @@ from const import *
 from result import *
 
 """wonn ma macos oda windows hernimmt🙄 """
+
+
 # from PIL import Image
 # import matplotlib.pyplot as plt
 
-"""called by executing python3 main.py"""
+
 def main():
+    if 2 > len(sys.argv) < 2:
+        print("USAGE 'python main.py {InputPath} {OutputPath}'")
+        return
+
+    image = getImage(sys.argv[1])
+
     """initialize all classes for _DI_"""
-    init()
+    init(image, sys.argv[2])
 
     """trying out current functionalities"""
     # testsomestuff()
 
     """display manipulated pixels using the opencv-window"""
-    # present()
+    # present(image)
 
     """log to csv by using result class"""
     log()
 
 
+def getImage(input_path):
+    return cv2.imread(input_path)
 
-def init():
+
+def init(image, output_path):
     # creating a global version of the image
-    global img; img = cv.imread(INPUTFILE)
+    global img
+    img = image
 
-    global chart; chart = Chart(img)
-    global dateaxis; dateaxis = DateAxis(img)
+    global chart
+    chart = Chart(img)
+    global dateAxis
+    dateAxis = DateAxis(img)
     # global logaxis; logaxis = LogAxis(img)
 
     # print(dateaxis.values)
 
-
-    #combining all data from all 3 sections(chart, dateaxis, logaxis) together -> applying tests, logging to csv
-    global result; result = Result(chart, dateaxis, None)
-
+    # combining all data from all 3 sections(chart, dateaxis, logaxis) and the output Path together
+    # -> applying tests, logging to csv
+    global result
+    result = Result(chart, dateAxis, None, output_path)
 
 
 def log():
@@ -52,22 +72,24 @@ def log():
 
 
 def present():
-    cv.imshow(INPUTFILE,img)
+    cv.imshow("Image:", img)
     cv.waitKey(0)
 
     # pil for windows/macos
-    #1
+    # 1
     # img2 = cv.cvtColor(img, cv.COLOR_BGR2RGB)
     # im_pil = Image.fromarray(img2)
     # im_pil.show()
 
-    #2
+    # 2
     # plt_image = cv.cvtColor(img, cv.COLOR_BGR2RGB)
     # imgplot = plt.imshow(plt_image)
     # cv.waitKey(0)
 
 
 """test functions:"""
+
+
 def testsomestuff():
     for index, value in range(logaxis.values):
         print(value)
@@ -78,29 +100,33 @@ def testsomestuff():
     # extractValuesFromCoordinates()
     # drawCoordinatesOnImage()
     # result.logToCsv()
-    #testDateAxis()
+    # testDateAxis()
+
 
 def drawFromChartOnImage():
     for i in chart.pixelCoordinates:
-        img[i[1],i[0]] = [150,120,200]
+        img[i[1], i[0]] = [150, 120, 200]
+
 
 def testDateAxis():
-    print(dateaxis.values)
+    print(dateAxis.values)
+
 
 def drawCoordinatesOnImage():
     # cv.line(img,(0,0),(511,511),(255,0,0),5)
 
     for val in chart.getConverted():
-
-        img[val[1], val[0]] = [255,150,180] # img[y,x] - flipped format
+        img[val[1], val[0]] = [255, 150, 180]  # img[y,x] - flipped format
     # print(chart.pixelCoordinates)
 
+
 def drawByAvg():
-    op = sum(getColorProximity([51,102,204],[51,102,204]))
+    op = sum(getColorProximity([51, 102, 204], [51, 102, 204]))
     for colIndex in range(CHARTSTARTX, CHARTSTARTY):
-        n, i, d = Chart.readTheBluestValue(img[:,colIndex])
+        n, i, d = Chart.readTheBluestValue(img[:, colIndex])
         avg = sum(d) / len(d)
-        img[round(avg),colIndex] = [150,120,200]
+        img[round(avg), colIndex] = [150, 120, 200]
+
 
 def equationSysX():
     k = sy.S('k')
@@ -108,7 +134,8 @@ def equationSysX():
     x = sy.S('x')
     # sy.Eq(x**2 +1, 3*x -1)
     # print(getPointArrayOnFunction(10, 0.1, 2, 3))
-    print(sy.solve( sy.Eq(101,((100*x)/399)*400+x )))
+    print(sy.solve(sy.Eq(101, ((100 * x) / 399) * 400 + x)))
+
 
 def extractValuesFromCoordinates():
     # print(getFragValuesBetween(0.2,10,12,100,120))
@@ -127,6 +154,7 @@ def extractValuesFromCoordinates():
     # values = Reader.loadImageIntoPixels('./input/1.png')
     # res = Chart.readTheDarkestValue(values[132])
     return 0
+
 
 # makes the file importable, so code does not get executed by importing our lib
 if __name__ == "__main__":

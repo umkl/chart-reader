@@ -8,10 +8,11 @@ from yaxis import LogAxis
 
 
 class Result:
-    def __init__(self, chart: Chart, dateaxis: DateAxis, logaxis: LogAxis):
+    def __init__(self, chart: Chart, dateaxis: DateAxis, logaxis: LogAxis, output_path):
         self.__dateAxis = dateaxis
         self.__logAxis = logaxis
         self.__chart = chart
+        self.__outputPath = output_path
 
         self.__dateMapped = []  # array consisting of: key: pixelValX - value: date
         self.__logMapped = []  # array consisting of: key: pixelValY - value: log
@@ -55,7 +56,7 @@ class Result:
         #     # self.__dateMapped[index] = value
 
     def simpleLogChart(self):
-        with open('output/1.csv', 'w', newline='\n') as f:
+        with open(self.__outputPath, 'w', newline='\n') as f:
             writer = csv.writer(f, delimiter=';')
             # for value in self.__chart.getConverted():
             #     writer.writerow(value)
@@ -72,7 +73,7 @@ class Result:
                 writer.writerow([offset.strftime("%d.%m.%Y %H:%M"), value])
 
     def logToCsv(self):
-        with open('output/1.csv', 'w') as f:
+        with open(self.__outputPath, 'w') as f:
             writer = csv.writer(f)
             # for value in self.__chart.getConverted():
             #     writer.writerow(value)
