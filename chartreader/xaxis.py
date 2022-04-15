@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import datetime
 
 import cv2
 
@@ -41,6 +41,15 @@ class DateAxis:
 
     valuesNoOffset = property(fget=getValuesNoOffset, fset=setValuesNoOffset, fdel=delValuesNoOffset, doc=None)
 
+    # Y-Offset always the same => Hardcode
+    yStarterOffset = -72
+    # startDate always the same => Hardcode
+    startDateTime = datetime(2018, 1, 1, 23, 0, 0)
+    # endDate always the same => Hardcode
+    endDateTime = datetime(2021, 2, 1, 6, 0, 0)
+    # offset before chart starts
+    chart_offset = 19
+
     def initValues(self):
         days_between = (self.endDateTime - self.startDateTime).days
         graph_starter_value = self.getXStarterValue(self.__imgInGrayscale)
@@ -50,29 +59,22 @@ class DateAxis:
         for i in range(graph_end_value - graph_starter_value):
             self.__values.append([i, i * pixel_per_day])
 
-    # Y-Offset always the same => Hardcode
-    yStarterOffset = -72
-    # startDate always the same => Hardcode
-    startDateTime = datetime(2018, 1, 1, 0, 0, 0)
-    # endDate always the same => Hardcode
-    endDateTime = datetime(2021, 3, 1, 0, 0, 0)
-
     def getXStarterValue(self, image):
         width = image.shape[1]
         for index in range(width):
             if image[self.yStarterOffset, index] == 178:
-                return index + 1
+                return index + self.chart_offset
 
-    def getXEndValue(self, image, xStarter):
+    def getXEndValue(self, image, x_starter_value):
         width = image.shape[1]
-        for index in range(width)[xStarter:]:
+        for index in range(width)[x_starter_value:]:
             if image[self.yStarterOffset, index] == 255:
-                return index - 2
+                return index - self.chart_offset - 1
 
 
 def convertImageIntoGrayscale(image):
     return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 
-def getPixelsPerDay(graphStartValue, graphEndValue, daysBetween):
-    return daysBetween / (graphEndValue - graphStartValue)
+def getPixelsPerDay(graph_starter_value, graph_end_value, days_between):
+    return days_between / (graph_end_value - graph_starter_value)

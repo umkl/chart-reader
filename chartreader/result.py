@@ -27,20 +27,14 @@ class Result:
     #         self.__fullMapped.append([self.__dateMapped[x],self.__logMapped[y]])
 
     def mapDate(self):
-        print(self.__chart.coordinates[0][0])
+        chart_offset = self.__chart.coordinates[0][0]
 
         for index, valuePair in self.__chart.coordinates:
             try:
-                # print(self.__chart.coordinates[index][0])
-                # if(self.__chart.coordinates[index][0] == self.__dateAxis.values[index][0]):
-                # dataxval = self.__dateAxis.values[index][1]
-                # doesExist = (self.__chart.coordinates[index][0] == index)
-                # cochind = self.__chart.coordinates[24][1]
-                # cochval = self.__chart.coordinates[index][1]
-                self.__dateMapped.append([self.__dateAxis.values[index][1], valuePair])
+                self.__dateMapped.append([self.__dateAxis.values[index - chart_offset][1], valuePair])
 
             except IndexError:
-                self.__dateMapped.append([self.__dateAxis.values[index][1], 0])
+                self.__dateMapped.append([self.__dateAxis.values[index - chart_offset][1], 0])
 
     def mapM(self):
         # 10^((756+y)/255)
