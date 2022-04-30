@@ -1,8 +1,8 @@
 import math
 import cv2
-from pytesseract import Output
-import pytesseract
-pytesseract.pytesseract.tesseract_cmd =  r'C:\Users\Lea\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+# from pytesseract import Output
+# import pytesseract
+# pytesseract.pytesseract.tesseract_cmd =  r'C:\Users\Lea\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
 class LogAxis:
     """

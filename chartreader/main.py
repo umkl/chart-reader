@@ -14,16 +14,12 @@ from chart import *
 from const import *
 from result import *
 
-"""wonn ma macos oda windows hernimmt🙄 """
-
-
 # from PIL import Image
 # import matplotlib.pyplot as plt
 
-
 def main():
     if 2 > len(sys.argv) < 2:
-        print("USAGE 'python main.py {InputPath} {OutputPath}'")
+        print("USAGE 'python main.py {InputFilePath} {OutputFilePath}'")
         return
 
     image = getImage(sys.argv[1])
@@ -52,11 +48,11 @@ def init(image, output_path):
 
     global chart
     chart = Chart(img)
+
     global dateAxis
     dateAxis = DateAxis(img)
+    
     # global logaxis; logaxis = LogAxis(img)
-
-    # print(dateaxis.values)
 
     # combining all data from all 3 sections(chart, dateaxis, logaxis) and the output Path together
     # -> applying tests, logging to csv
@@ -65,9 +61,10 @@ def init(image, output_path):
 
 
 def log():
-    result.mapDate()
-    result.mapM()
-    result.simpleLogChart()
+    # result.mapDate() 
+    # result.mapM() # map values to beispiel 1 
+    # result.simpleLogChart()
+    result.logTest()
     # result.simpleLogChart()
 
 

@@ -36,6 +36,21 @@ class Result:
             except IndexError:
                 self.__dateMapped.append([self.__dateAxis.values[index - chart_offset][1], 0])
 
+    def mapLogValues(self):
+        for index, valuePair in self.__chart.coordinates:
+            try:
+                self.__logMapped.append([valuePair,self.__logAxis.values[index - chart_offset][1]])
+            except IndexError:
+                self.__logMapped.append([0, self.__logAxis.values[index - chart_offset][1]])
+
+    def logTest(self):
+         print(self.__chart.coordinates[0][0])
+         for i, v in self.__chart.coordinates:
+            if i == 0 or i == len(self.__chart.coordinates)-1:
+                print("index",i,"value ",v)    
+            
+             
+
     def mapM(self):
         # 10^((756+y)/255)
         for index, value in self.__dateMapped:
@@ -70,7 +85,7 @@ class Result:
                 offset = start + delta
 
                 writer.writerow([offset.strftime("%d.%m.%Y %H:%M"), value])
-        print("CSV-File saved. Saved it to {}.".format(self.__outputPath))
+        print("CSV-File saved to {}.".format(self.__outputPath))
 
     def logToCsv(self):
         with open(self.__outputPath, 'w') as f:
