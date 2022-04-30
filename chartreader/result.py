@@ -33,7 +33,6 @@ class Result:
         for index, valuePair in self.__chart.coordinates:
             try:
                 self.__dateMapped.append([self.__dateAxis.values[index - chart_offset][1], valuePair])
-
             except IndexError:
                 self.__dateMapped.append([self.__dateAxis.values[index - chart_offset][1], 0])
 
@@ -71,6 +70,7 @@ class Result:
                 offset = start + delta
 
                 writer.writerow([offset.strftime("%d.%m.%Y %H:%M"), value])
+        print("CSV-File saved. Saved it to {}.".format(self.__outputPath))
 
     def logToCsv(self):
         with open(self.__outputPath, 'w') as f:
