@@ -117,24 +117,26 @@ class LogAxis:
         temp.reverse()
 
         # Y-Value at X-Axis is 0
-        values_unit_steps[self.__values[0]] = 0
+        values_unit_steps[0] = 0
         for unit_step in self.__unitSteps:
             img = getCroppedImage(self.__img, x_starter=0, x_end=y_axis_x_pos,
                                   y_starter=unit_step - 8, y_end=unit_step + 8)
             img = cv2.resize(img, None, fx=resize_time, fy=resize_time, interpolation=cv2.INTER_CUBIC)
             result = pytesseract.image_to_data(img, config='-c tessedit_char_whitelist=10.',
                                                output_type=Output.DICT)
+            # flipped unit_step => graph begins at 0
+            unit_step_adjusted = (unit_step - self.__values[0]) * -1
             for i in range(0, len(result["text"])):
                 number = result["text"][i]
                 if number.strip() != '':
                     if number == '1.00000':
                         number = '100000'
-                    values_unit_steps[unit_step] = number
+                    values_unit_steps[unit_step_adjusted] = number
             try:
-                if values_unit_steps[unit_step]:
+                if values_unit_steps[unit_step_adjusted]:
                     continue
             except KeyError:
-                values_unit_steps[unit_step] = '1'
+                values_unit_steps[unit_step_adjusted] = '1'
 
         return values_unit_steps
 
@@ -199,3 +201,4 @@ if __name__ == "__main__":
                 print(imgPath)
                 axis = LogAxis(imgPath)
                 print(axis.getPositionOfNumbers())
+                print(axis.getValueOfPosition(115))
