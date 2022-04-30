@@ -23,3 +23,5 @@ This class is used to read the x-axis and converting the data into a coordinate-
 ## packaging
 WIP
 
+## Frontend
+[Chart-Reader Frontend](https://github.com/EinboeckFranz/chartreader_frontend)
