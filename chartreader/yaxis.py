@@ -1,12 +1,13 @@
 import math
 import os
-import cv2
 
-from pytesseract import Output
+import cv2
 import pytesseract
+from pytesseract import Output
 
 # THANKS WINDOWS
 pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract'
+
 
 class LogAxis:
     """
@@ -108,26 +109,33 @@ class LogAxis:
         return True
 
     def getPositionOfNumbers(self):
-        # TODO look over every unit_step and hopefully fix number recognition
-        resize_time = 3
-        img = cv2.resize(self.__img, None, fx=resize_time, fy=resize_time, interpolation=cv2.INTER_CUBIC)
-        results = pytesseract.image_to_data(img, config='-c tessedit_char_whitelist=01.',
-                                            output_type=Output.DICT)
-        origin_x_pos = self.getOriginXPos()
+        resize_time = 5
+        y_axis_x_pos = self.getOriginXPos()
         values_unit_steps = {}
 
-        for i in range(0, len(results["text"])):
-            if (results["left"][i] + results["width"][i]) / resize_time < origin_x_pos:
-                number = results["text"][i]
-                if number.strip() != '':
-                    top = int(results["top"][i] / resize_time)
-                    height = int(results["height"][i] / resize_time)
-
-                    unitStep = next(filter(lambda x: top < x < top + height, self.__unitSteps))
-                    values_unit_steps[unitStep] = number
+        temp = self.__unitSteps
+        temp.reverse()
 
         # Y-Value at X-Axis is 0
         values_unit_steps[self.__values[0]] = 0
+        for unit_step in self.__unitSteps:
+            img = getCroppedImage(self.__img, x_starter=0, x_end=y_axis_x_pos,
+                                  y_starter=unit_step - 8, y_end=unit_step + 8)
+            img = cv2.resize(img, None, fx=resize_time, fy=resize_time, interpolation=cv2.INTER_CUBIC)
+            result = pytesseract.image_to_data(img, config='-c tessedit_char_whitelist=10.',
+                                               output_type=Output.DICT)
+            for i in range(0, len(result["text"])):
+                number = result["text"][i]
+                if number.strip() != '':
+                    if number == '1.00000':
+                        number = '100000'
+                    values_unit_steps[unit_step] = number
+            try:
+                if values_unit_steps[unit_step]:
+                    continue
+            except KeyError:
+                values_unit_steps[unit_step] = '1'
+
         return values_unit_steps
 
     # Calculate value from y position with offset
@@ -152,6 +160,10 @@ class LogAxis:
         logBefore = math.log10(valueBefore)
 
         return math.pow(10, logBefore + valueRelation)
+
+
+def getCroppedImage(image, x_starter, x_end, y_starter, y_end):
+    return image[y_starter:y_end, x_starter:x_end]
 
 
 # 200 von xachse
