@@ -48,23 +48,27 @@ def init(image, output_path):
 
     global chart
     chart = Chart(img)
+    # chart = None
 
     global dateAxis
     dateAxis = DateAxis(img)
     
-    # global logaxis; logaxis = LogAxis(img)
+    global logaxis
+    # logaxis = LogAxis(img)
+    logaxis = None
 
     # combining all data from all 3 sections(chart, dateaxis, logaxis) and the output Path together
     # -> applying tests, logging to csv
+
     global result
-    result = Result(chart, dateAxis, None, output_path)
+    result = Result(chart, dateAxis, logaxis, output_path)
 
 
 def log():
-    # result.mapDate() 
-    # result.mapM() # map values to beispiel 1 
-    # result.simpleLogChart()
-    result.logTest()
+    result.mapDate() 
+    result.mapM() # map values to beispiel 1 
+    result.simpleLogChart()
+    # result.logTest()
     # result.simpleLogChart()
 
 

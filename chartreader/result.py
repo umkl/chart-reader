@@ -37,19 +37,19 @@ class Result:
                 self.__dateMapped.append([self.__dateAxis.values[index - chart_offset][1], 0])
 
     def mapLogValues(self):
-        for index, valuePair in self.__chart.coordinates:
-            try:
-                self.__logMapped.append([valuePair,self.__logAxis.values[index - chart_offset][1]])
-            except IndexError:
-                self.__logMapped.append([0, self.__logAxis.values[index - chart_offset][1]])
+        for xValue, yValue in self.__chart.coordinates:
+            print("-")
+            # try:
+            #     self.__logMapped.append([yValue,self.__logAxis.values[xValue - chart_offset][1]])
+            # except IndexError:
+            #     self.__logMapped.append([0, self.__logAxis.values[index - chart_offset][1]])
 
     def logTest(self):
-         print(self.__chart.coordinates[0][0])
-         for i, v in self.__chart.coordinates:
-            if i == 0 or i == len(self.__chart.coordinates)-1:
-                print("index",i,"value ",v)    
-            
-             
+        # imgPath = '../docs/Beispiele/Run 22/00.0-15.0-02.0-20000.0-10.0-20.0-00.0-02.0-10.0-NONE.png'
+        # axis = LogAxis(img)LogAxis
+        # print(self.__logAxis.getValueOfPosition(110))
+        print("lois!")
+        # print(len(self.__logAxis.values))
 
     def mapM(self):
         # 10^((756+y)/255)
