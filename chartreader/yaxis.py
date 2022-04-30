@@ -109,7 +109,7 @@ class LogAxis:
         return True
 
     def getPositionOfNumbers(self):
-        resize_time = 5
+        resize_time = 4
         y_axis_x_pos = self.getOriginXPos()
         values_unit_steps = {}
 
