@@ -1,8 +1,12 @@
 import math
+import os
 import cv2
-# from pytesseract import Output
-# import pytesseract
-# pytesseract.pytesseract.tesseract_cmd =  r'C:\Users\Lea\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+
+from pytesseract import Output
+import pytesseract
+
+# THANKS WINDOWS
+pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract'
 
 class LogAxis:
     """
@@ -16,9 +20,8 @@ class LogAxis:
     originHeight = 72  # vertical distance from y=height to x-axis. must be negated (-72 = 72 from bottom)
     originGrayVal = 178  # grayscale value for the origin pixel
 
-    def __init__(self, imgPath):
-        self.__imgPath = imgPath
-        self.__img = cv2.imread(imgPath)
+    def __init__(self, img_path):
+        self.__img = cv2.imread(img_path)
         self.__gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
         self.__values = self.getYAxisValuesOffset()
         self.__valuesNoOffset = self.getYAxisValues()
@@ -105,39 +108,44 @@ class LogAxis:
         return True
 
     def getPositionOfNumbers(self):
-        img = cv2.resize(self.__img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+        # TODO look over every unit_step and hopefully fix number recognition
+        resize_time = 3
+        img = cv2.resize(self.__img, None, fx=resize_time, fy=resize_time, interpolation=cv2.INTER_CUBIC)
         results = pytesseract.image_to_data(img, config='-c tessedit_char_whitelist=01.',
-                                        output_type=Output.DICT)
+                                            output_type=Output.DICT)
         origin_x_pos = self.getOriginXPos()
         values_unit_steps = {}
 
         for i in range(0, len(results["text"])):
-            if ((results["left"][i] + results["width"][i]) / 3 < origin_x_pos):
+            if (results["left"][i] + results["width"][i]) / resize_time < origin_x_pos:
                 number = results["text"][i]
-                if(number != ''):
-                    top = int(results["top"][i]/3)
-                    height = int(results["height"][i]/3)
+                if number.strip() != '':
+                    top = int(results["top"][i] / resize_time)
+                    height = int(results["height"][i] / resize_time)
 
-                    unitStep = next(filter(lambda x: x > top and x < top + height, self.__unitSteps))
+                    unitStep = next(filter(lambda x: top < x < top + height, self.__unitSteps))
                     values_unit_steps[unitStep] = number
 
+        # Y-Value at X-Axis is 0
+        values_unit_steps[self.__values[0]] = 0
         return values_unit_steps
 
     # Calculate value from y position with offset
-    def getValueOfPosition(self, yValue):
+    def getValueOfPosition(self, y_value):
         unitStepBefore = self.__unitSteps[0]
         unitStepAfter = self.__unitSteps[-1]
 
         for i in range(0, len(self.__valuesUnitSteps)):
             unitStep = list(self.__valuesUnitSteps.keys())[i]
-            if (unitStep == yValue): return self.__valuesUnitSteps.get(unitStep)
-            if (unitStep < yValue and (unitStep > unitStepAfter or unitStepAfter == 0)):
+            if unitStep == y_value:
+                return self.__valuesUnitSteps.get(unitStep)
+            if unitStep < y_value and (unitStep > unitStepAfter or unitStepAfter == 0):
                 unitStepAfter = unitStep
-            if (unitStep > yValue and (unitStep < unitStepBefore or unitStepBefore == 0)):
+            if unitStep > y_value and (unitStep < unitStepBefore or unitStepBefore == 0):
                 unitStepBefore = unitStep
 
         unitStepDiff = unitStepBefore - unitStepAfter
-        yDiff = yValue - unitStepAfter
+        yDiff = y_value - unitStepAfter
 
         valueRelation = 1 - yDiff / unitStepDiff
         valueBefore = float(self.__valuesUnitSteps.get(unitStepBefore))
@@ -172,13 +180,10 @@ class LogAxis:
 
 # hobs do eine do, damits nd beim import ausgführt wird
 if __name__ == "__main__":
-    # for root, dirs, files in os.walk('../docs/Beispiele'):
-    #     for filename in files:
-    #         if filename.endswith('.png'):
-    #             imgPath = os.path.join(root, filename)
-    #             axis = LogAxis(imgPath)
-    #             axis.getYAxisUnitSteps()
-    imgPath = '../docs/Beispiele/Run 22/00.0-15.0-02.0-20000.0-10.0-20.0-00.0-02.0-10.0-NONE.png'
-    axis = LogAxis(imgPath)
-    print(axis.getValueOfPosition(110))
-
+    for root, dirs, files in os.walk('../docs/Beispiele'):
+        for filename in files:
+            if filename.endswith('.png'):
+                imgPath = os.path.join(root, filename)
+                print(imgPath)
+                axis = LogAxis(imgPath)
+                print(axis.getPositionOfNumbers())
