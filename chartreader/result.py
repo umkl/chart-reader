@@ -1,6 +1,7 @@
 import csv
 import math
 from datetime import timedelta
+import os
 
 from chart import Chart
 from xaxis import DateAxis
@@ -96,6 +97,7 @@ class Result:
                 (self.__dateMapped[xValue], self.__logMapped[xValue][1]))
 
     def simpleLogChart(self):
+        os.makedirs(os.path.dirname(self.__outputPath), exist_ok=True)
         with open(self.__outputPath, 'w', newline='\n') as f:
             writer = csv.writer(f, delimiter=',')
             # for value in self.__chart.getConverted():

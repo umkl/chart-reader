@@ -50,7 +50,7 @@ def getFragValuesBetween(occ, pointAX, pointAY, pointBX, pointBY):
 
 
 def linearPitchFunction(x, k):  # f(x)=k*x+d
-        return k*x
+    return k*x
 
 
 # get coordinates of fractions between two pixels/points
@@ -77,9 +77,12 @@ class Chart:
         self.__pixelCoordinates = []
         self.__coordinates = []
 
+        self.chartStartValue = self.getChartStartValue(img)
+        self.chartEndValue = self.getChartEndValue(img)
         # retriving pixel values by bluest value
         self.definePixelCoordinates(img)
         self.defineCoordinatesByPixelCoordinates(self.pixelCoordinates)
+        # self.chartEndValue
 
     def setcoordinates(self, coordinates):
         self.__coordinates = coordinates
@@ -102,36 +105,56 @@ class Chart:
     pixelCoordinates = property(
         getPixelCoordinates, setPixelCoordinates, delPixelCoordinates)
 
+    def getChartStartValue(self, img):
+        for columnIndex in range(0, len(img[0])):
+            val = img[:, columnIndex]
+            try:
+                bluest = self.retrieveTheBluestValueFromColumn(val)
+                return columnIndex
+            except ZeroDivisionError:
+                continue
+
+    def getChartEndValue(self, img):
+        for columnIndex in range(self.chartStartValue, len(img[0])):
+            val = img[:, columnIndex]
+            try:
+                bluest = self.retrieveTheBluestValueFromColumn(val)
+                continue
+            except ZeroDivisionError:
+                return columnIndex
+
     def definePixelCoordinates(self, img):
-        for column in range(CHARTSTARTX, CHARTENDX):
+        for column in range(self.chartStartValue, self.chartEndValue):
             try:
                 secolumn = img[:, column]
                 yCoordinate = self.retrieveTheBluestValueFromColumn(
                     img[:, column])
             except ZeroDivisionError:
-                 yCoordinate = 0
-            self.pixelCoordinates.append([column,yCoordinate])
-            
+                yCoordinate = 0
+            self.pixelCoordinates.append([column, yCoordinate])
+
     def retrieveTheBluestValueFromColumn(self, imgCol):
         closestIndexes = []
         for index in range(len(imgCol)):
-            vicinity = sum(getColorProximity(BLUE,imgCol[index]))#color irrelevant
-            if (vicinity < 10):#
-                closestIndexes.append(index) # print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
+            vicinity = sum(getColorProximity(
+                BLUE, imgCol[index]))  # color irrelevant
+            if (vicinity < 10):
+                # print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
+                closestIndexes.append(index)
         return round(sum(closestIndexes)/len(closestIndexes))
 
     def getPixelValuesFrag(self, occ):
         for itr in range(len(self.pixelCoordinates)):
-            pointAX = self.pixelCoordinates[itr,0] # [[x,y]]
-            pointBX = self.pixelCoordinates[itr+1,0] # [x,y]
-            pointAY = self.pixelCoordinates[itr,1] 
-            pointBY = self.pixelCoordinates[itr+1,1]
+            pointAX = self.pixelCoordinates[itr, 0]  # [[x,y]]
+            pointBX = self.pixelCoordinates[itr+1, 0]  # [x,y]
+            pointAY = self.pixelCoordinates[itr, 1]
+            pointBY = self.pixelCoordinates[itr+1, 1]
         return getFragValuesBetween(occ, pointAX, pointBX, pointAY, pointBY)
 
     def defineCoordinatesByPixelCoordinates(self, originPixelCoordinates):
         for pixelCoordinate in originPixelCoordinates:
-            self.coordinates.append([pixelCoordinate[0]-XINDENT,YINDENT-pixelCoordinate[1]])
-
+            self.coordinates.append(
+                [pixelCoordinate[0]-XINDENT, YINDENT-pixelCoordinate[1]])
 
 
 # img = cv.imread('input/1.png',1)
@@ -143,7 +166,7 @@ class Chart:
 # cv.waitKey(0)
 
 # for i in range(row):
-#     for j in range(cols): 
+#     for j in range(cols):
 #         # print(img[i,j])
 #         print("current image values: " + str(i)+ str(j))
 #         if(img[i,j] == [0,0,0]):
@@ -179,4 +202,3 @@ class Chart:
 # reader = Reader()
 # print(reader.imagePath)
 # print('ob')
-
