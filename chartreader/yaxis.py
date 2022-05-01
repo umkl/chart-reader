@@ -164,7 +164,7 @@ class LogAxis:
 
     def getValueOfGraphPosition(self, y_value):
         convert_y_value = y_value + self.__values[0]
-        self.getValueOfPosition(convert_y_value)
+        return self.getValueOfPosition(convert_y_value)
 
 
 def getCroppedImage(image, x_starter, x_end, y_starter, y_end):
