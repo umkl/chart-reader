@@ -1,29 +1,25 @@
-from fileinput import close
-from lib2to3.pgen2.token import INDENT
-from re import A, I
 from const import *
 import numpy as np
-import cv2 as cv
 import sympy as sy
 
 """global helper functions"""
-global getFragValuesBetween, linearPitchFunction, getPointArrayOnFunction, getColorProximity, getLinearFunctionFromCoo  # sumOfArray
+global getFragValuesBetween, linear_pitch_function, getPointArrayOnFunction, get_color_proximity, get_linear_function_from_coo
 
 
-def getColorProximity(colorA, colorB):  # + rgb
-    [rA, gA, bA] = colorA
-    [rB, gB, bB] = colorB
-    return np.abs(np.array([rA-rB, gA-gB, bA-bB]))
+def getColorProximity(color_a, color_b):  # + rgb
+    [rA, gA, bA] = color_a
+    [rB, gB, bB] = color_b
+    return np.abs(np.array([rA - rB, gA - gB, bA - bB]))
 
 
 # cooP1[x,y], cooP2[x,y] # https://www.grund-wissen.de/informatik/python/scipy/sympy.html
-def getLinearFunctionFromCoo(cooP1, cooP2):
+def getLinearFunctionFromCoo(coo_p1, coo_p2):
     k, d = sy.symbols("k d")  # f(x)=k*x+d
     # k = sy.S('k')
     # d = sy.S('d')
     equations = [
-        sy.Eq(cooP1[0]*k+d, cooP1[1]),
-        sy.Eq(cooP2[0]*k+d, cooP2[1]),
+        sy.Eq(coo_p1[0] * k + d, coo_p1[1]),
+        sy.Eq(coo_p2[0] * k + d, coo_p2[1]),
     ]
 
     solution = sy.solve(equations)
@@ -34,34 +30,54 @@ def getLinearFunctionFromCoo(cooP1, cooP2):
 
 
 # pixelA[x,y],pixelB[x,y]
-def getFragValuesBetween(occ, pointAX, pointAY, pointBX, pointBY):
-    distance = np.abs(pointBX - pointAX)
+def getFragValuesBetween(occ, point_ax, point_ay, point_bx, point_by):
+    distance = np.abs(point_bx - point_ax)
     itr = 0  # iterator for each fragment between points
-    funcvals = getLinearFunctionFromCoo([pointAX, pointAY], [pointBX, pointBY])
+    funcvals = get_linear_function_from_coo([point_ax, point_ay], [point_bx, point_by])
     k = funcvals['k']
     d = funcvals['d']
     preciseValuesBetween = []
     while itr < distance:
         # increasing pointAX by the fragment iterator and using this new xvalue with
-        pointAYonNewFragment = k * (pointAX + itr) + d
-        preciseValuesBetween.append([pointAX+itr, pointAYonNewFragment])
+        pointAYonNewFragment = k * (point_ax + itr) + d
+        preciseValuesBetween.append([point_ax + itr, pointAYonNewFragment])
         itr = itr + occ
     return preciseValuesBetween
 
 
 def linearPitchFunction(x, k):  # f(x)=k*x+d
-    return k*x
+    return k * x
 
 
 # get coordinates of fractions between two pixels/points
-def getPointArrayOnFunction(occ, xPoint1, xPoint2, yPoint1, yPoint2):
-    pitch = yPoint1-yPoint2
+def getPointArrayOnFunction(occ, x_point1, x_point2, y_point1, y_point2):
+    pitch = y_point1 - y_point2
     points = []
     xVal = 0
-    while xVal < xPoint2-xPoint1:
-        points.append(linearPitchFunction(xVal, pitch))
+    while xVal < x_point2 - x_point1:
+        points.append(linear_pitch_function(xVal, pitch))
         xVal += occ
     return points
+
+
+def retrieveTheBluestValueFromColumn(img_col):
+    closestIndexes = []
+    for index in range(len(img_col)):
+        vicinity = sum(get_color_proximity(
+            BLUE, img_col[index]))  # color irrelevant
+        if vicinity < 10:
+            closestIndexes.append(index)
+    return round(sum(closestIndexes) / len(closestIndexes))
+
+
+def getChartStartValue(img):
+    for columnIndex in range(0, len(img[0])):
+        val = img[:, columnIndex]
+        try:
+            retrieveTheBluestValueFromColumn(val)
+            return columnIndex
+        except ZeroDivisionError:
+            continue
 
 
 class Chart:
@@ -77,9 +93,9 @@ class Chart:
         self.__pixelCoordinates = []
         self.__coordinates = []
 
-        self.chartStartValue = self.getChartStartValue(img)
+        self.chartStartValue = getChartStartValue(img)
         self.chartEndValue = self.getChartEndValue(img)
-        # retriving pixel values by bluest value
+        # retrieving pixel values by bluest value
         self.definePixelCoordinates(img)
         self.defineCoordinatesByPixelCoordinates(self.pixelCoordinates)
         # self.chartEndValue
@@ -92,33 +108,26 @@ class Chart:
 
     def delcoordinates(self):
         del self.__coordinates
+
     coordinates = property(getcoordinates, setcoordinates, delcoordinates)
 
-    def setPixelCoordinates(self, pixelCoordinates):
-        self.__pixelCoordinates = pixelCoordinates
+    def setPixelCoordinates(self, pixel_coordinates):
+        self.__pixelCoordinates = pixel_coordinates
 
     def getPixelCoordinates(self):
         return self.__pixelCoordinates
 
     def delPixelCoordinates(self):
         del self.__pixelCoordinates
+
     pixelCoordinates = property(
         getPixelCoordinates, setPixelCoordinates, delPixelCoordinates)
-
-    def getChartStartValue(self, img):
-        for columnIndex in range(0, len(img[0])):
-            val = img[:, columnIndex]
-            try:
-                bluest = self.retrieveTheBluestValueFromColumn(val)
-                return columnIndex
-            except ZeroDivisionError:
-                continue
 
     def getChartEndValue(self, img):
         for columnIndex in range(self.chartStartValue, len(img[0])):
             val = img[:, columnIndex]
             try:
-                bluest = self.retrieveTheBluestValueFromColumn(val)
+                retrieveTheBluestValueFromColumn(val)
                 continue
             except ZeroDivisionError:
                 return columnIndex
@@ -126,79 +135,20 @@ class Chart:
     def definePixelCoordinates(self, img):
         for column in range(self.chartStartValue, self.chartEndValue):
             try:
-                secolumn = img[:, column]
-                yCoordinate = self.retrieveTheBluestValueFromColumn(
-                    img[:, column])
+                yCoordinate = retrieveTheBluestValueFromColumn(img[:, column])
             except ZeroDivisionError:
                 yCoordinate = 0
             self.pixelCoordinates.append([column, yCoordinate])
 
-    def retrieveTheBluestValueFromColumn(self, imgCol):
-        closestIndexes = []
-        for index in range(len(imgCol)):
-            vicinity = sum(getColorProximity(
-                BLUE, imgCol[index]))  # color irrelevant
-            if (vicinity < 10):
-                # print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
-                closestIndexes.append(index)
-        return round(sum(closestIndexes)/len(closestIndexes))
-
     def getPixelValuesFrag(self, occ):
         for itr in range(len(self.pixelCoordinates)):
             pointAX = self.pixelCoordinates[itr, 0]  # [[x,y]]
-            pointBX = self.pixelCoordinates[itr+1, 0]  # [x,y]
+            pointBX = self.pixelCoordinates[itr + 1, 0]  # [x,y]
             pointAY = self.pixelCoordinates[itr, 1]
-            pointBY = self.pixelCoordinates[itr+1, 1]
+            pointBY = self.pixelCoordinates[itr + 1, 1]
         return getFragValuesBetween(occ, pointAX, pointBX, pointAY, pointBY)
 
-    def defineCoordinatesByPixelCoordinates(self, originPixelCoordinates):
-        for pixelCoordinate in originPixelCoordinates:
+    def defineCoordinatesByPixelCoordinates(self, origin_pixel_coordinates):
+        for pixelCoordinate in origin_pixel_coordinates:
             self.coordinates.append(
-                [pixelCoordinate[0]-XINDENT, YINDENT-pixelCoordinate[1]])
-
-
-# img = cv.imread('input/1.png',1)
-# # print(img.shape)
-# rows, cols, _ = img.shape
-# cv.imshow('1.jpg',img)
-# print(img[343,160]) # 343 = y, 160 = x
-
-# cv.waitKey(0)
-
-# for i in range(row):
-#     for j in range(cols):
-#         # print(img[i,j])
-#         print("current image values: " + str(i)+ str(j))
-#         if(img[i,j] == [0,0,0]):
-#             print("black")
-#         # k = img[1,j,2]
-#         # print(k)
-# print(cols)
-# print(img[124,309])
-# for i in range(cols):
-#     print("current index: ",str(i-1), ":" , img[100,i-1])
-
-
-# img = cv2.imread('input/1.png')
-# cv2.imshow('machine learning', img)
-# B, G, R = img[100,100]
-# print(B, G, R)
-
-# img = cv2.imread('input/1.png',cv2.IMREAD_COLOR)
-# print(img)
-# img_file = 'images/TriColor.png'
-# img = cv2.imread(img_file, cv2.IMREAD_COLOR)           # rgb
-# alpha_img = cv2.imread(img_file, cv2.IMREAD_UNCHANGED) # rgba
-# gray_img = cv2.imread(img_file, cv2.IMREAD_GRAYSCALE)  # grayscale
-
-# print (type(img))
-
-# print 'RGB shape: ', img.shape        # Rows, cols, channels
-# print 'ARGB shape:', alpha_img.shape
-# print 'Gray shape:', gray_img.shape
-# print 'img.dtype: ', img.dtype
-# print 'img.size: ', img.size
-
-# reader = Reader()
-# print(reader.imagePath)
-# print('ob')
+                [pixelCoordinate[0] - XINDENT, YINDENT - pixelCoordinate[1]])
