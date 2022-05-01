@@ -131,6 +131,8 @@ class LogAxis:
                 if number.strip() != '':
                     if number == '1.00000':
                         number = '100000'
+                    if number.endswith('.'):
+                        number.rstrip('.')
                     values_unit_steps[unit_step] = number
             try:
                 if values_unit_steps[unit_step]:
