@@ -45,10 +45,7 @@ class Result:
             #     self.__logMapped.append([0, self.__logAxis.values[index - chart_offset][1]])
 
     def logTest(self):
-        # imgPath = '../docs/Beispiele/Run 22/00.0-15.0-02.0-20000.0-10.0-20.0-00.0-02.0-10.0-NONE.png'
-        # axis = LogAxis(img)LogAxis
-        # print(self.__logAxis.getValueOfPosition(110))
-        print("lois!")
+        print(self.__logAxis.getValueOfPosition(110))
         # print(len(self.__logAxis.values))
 
     def mapM(self):

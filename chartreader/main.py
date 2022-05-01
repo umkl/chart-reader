@@ -54,8 +54,8 @@ def init(image, output_path):
     dateAxis = DateAxis(img)
     
     global logaxis
-    # logaxis = LogAxis(img)
-    logaxis = None
+    logaxis = LogAxis(img)
+    # logaxis = None
 
     # combining all data from all 3 sections(chart, dateaxis, logaxis) and the output Path together
     # -> applying tests, logging to csv
@@ -65,10 +65,10 @@ def init(image, output_path):
 
 
 def log():
-    result.mapDate() 
-    result.mapM() # map values to beispiel 1 
-    result.simpleLogChart()
-    # result.logTest()
+    # result.mapDate() 
+    # result.mapM() # map values to beispiel 1 
+    # result.simpleLogChart()
+    result.logTest()
     # result.simpleLogChart()
 
 

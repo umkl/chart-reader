@@ -121,7 +121,6 @@ class LogAxis:
 
                     unitStep = next(filter(lambda x: x > top and x < top + height, self.__unitSteps))
                     values_unit_steps[unitStep] = number
-
         return values_unit_steps
 
     # Calculate value from y position with offset
