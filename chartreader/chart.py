@@ -1,57 +1,68 @@
 from fileinput import close
 from lib2to3.pgen2.token import INDENT
 from re import A, I
-from const import * 
+from const import *
 import numpy as np
 import cv2 as cv
 import sympy as sy
 
 """global helper functions"""
-global getFragValuesBetween, linearPitchFunction, getPointArrayOnFunction, getColorProximity, getLinearFunctionFromCoo # sumOfArray
-def getColorProximity(colorA, colorB):#+ rgb
-    [rA,gA,bA] = colorA
-    [rB,gB,bB] = colorB
+global getFragValuesBetween, linearPitchFunction, getPointArrayOnFunction, getColorProximity, getLinearFunctionFromCoo  # sumOfArray
+
+
+def getColorProximity(colorA, colorB):  # + rgb
+    [rA, gA, bA] = colorA
+    [rB, gB, bB] = colorB
     return np.abs(np.array([rA-rB, gA-gB, bA-bB]))
 
-def getLinearFunctionFromCoo(cooP1, cooP2): # cooP1[x,y], cooP2[x,y] # https://www.grund-wissen.de/informatik/python/scipy/sympy.html
-    k, d = sy.symbols("k d")# f(x)=k*x+d
+
+# cooP1[x,y], cooP2[x,y] # https://www.grund-wissen.de/informatik/python/scipy/sympy.html
+def getLinearFunctionFromCoo(cooP1, cooP2):
+    k, d = sy.symbols("k d")  # f(x)=k*x+d
     # k = sy.S('k')
     # d = sy.S('d')
     equations = [
         sy.Eq(cooP1[0]*k+d, cooP1[1]),
         sy.Eq(cooP2[0]*k+d, cooP2[1]),
     ]
-    
+
     solution = sy.solve(equations)
     k = solution[k]
     d = solution[d]
 
-    return {'k':sy.N(k),'d':sy.N(d)}
+    return {'k': sy.N(k), 'd': sy.N(d)}
 
-def getFragValuesBetween(occ,pointAX, pointAY, pointBX, pointBY): #pixelA[x,y],pixelB[x,y]
+
+# pixelA[x,y],pixelB[x,y]
+def getFragValuesBetween(occ, pointAX, pointAY, pointBX, pointBY):
     distance = np.abs(pointBX - pointAX)
-    itr = 0 # iterator for each fragment between points 
-    funcvals = getLinearFunctionFromCoo([pointAX, pointAY],[pointBX, pointBY])
+    itr = 0  # iterator for each fragment between points
+    funcvals = getLinearFunctionFromCoo([pointAX, pointAY], [pointBX, pointBY])
     k = funcvals['k']
     d = funcvals['d']
     preciseValuesBetween = []
     while itr < distance:
-        pointAYonNewFragment = k * (pointAX + itr) + d # increasing pointAX by the fragment iterator and using this new xvalue with       
+        # increasing pointAX by the fragment iterator and using this new xvalue with
+        pointAYonNewFragment = k * (pointAX + itr) + d
         preciseValuesBetween.append([pointAX+itr, pointAYonNewFragment])
         itr = itr + occ
     return preciseValuesBetween
 
-def linearPitchFunction(x,k): # f(x)=k*x+d
+
+def linearPitchFunction(x, k):  # f(x)=k*x+d
         return k*x
 
-def getPointArrayOnFunction( occ, xPoint1, xPoint2,yPoint1, yPoint2):##get coordinates of fractions between two pixels/points
+
+# get coordinates of fractions between two pixels/points
+def getPointArrayOnFunction(occ, xPoint1, xPoint2, yPoint1, yPoint2):
     pitch = yPoint1-yPoint2
     points = []
     xVal = 0
     while xVal < xPoint2-xPoint1:
-        points.append(linearPitchFunction(xVal,pitch))
-        xVal+=occ
+        points.append(linearPitchFunction(xVal, pitch))
+        xVal += occ
     return points
+
 
 class Chart:
     """Class for the chart values
@@ -61,34 +72,43 @@ class Chart:
         pixelCoordinates {number[,]} -- coordinates without offset - according to the pixels on the image
     """
 
-    def __init__(self,img):
+    def __init__(self, img):
         # self.__img = img
         self.__pixelCoordinates = []
         self.__coordinates = []
 
-        #retriving pixel values by bluest value
+        # retriving pixel values by bluest value
         self.definePixelCoordinates(img)
         self.defineCoordinatesByPixelCoordinates(self.pixelCoordinates)
-   
+
     def setcoordinates(self, coordinates):
         self.__coordinates = coordinates
+
     def getcoordinates(self):
         return self.__coordinates
+
     def delcoordinates(self):
         del self.__coordinates
-    coordinates=property(getcoordinates, setcoordinates, delcoordinates)
-    
+    coordinates = property(getcoordinates, setcoordinates, delcoordinates)
+
     def setPixelCoordinates(self, pixelCoordinates):
         self.__pixelCoordinates = pixelCoordinates
+
     def getPixelCoordinates(self):
         return self.__pixelCoordinates
+
     def delPixelCoordinates(self):
         del self.__pixelCoordinates
-    pixelCoordinates=property(getPixelCoordinates, setPixelCoordinates, delPixelCoordinates)
-    
-    def definePixelCoordinates(self,img):
+    pixelCoordinates = property(
+        getPixelCoordinates, setPixelCoordinates, delPixelCoordinates)
+
+    def definePixelCoordinates(self, img):
         for column in range(CHARTSTARTX, CHARTENDX):
-            yCoordinate = self.retrieveTheBluestValueFromColumn(img[:,column])
+            try:
+                yCoordinate = self.retrieveTheBluestValueFromColumn(
+                    img[:, column])
+            except ZeroDivisionError:
+                 yCoordinate = 0
             self.pixelCoordinates.append([column,yCoordinate])
             
     def retrieveTheBluestValueFromColumn(self, imgCol):

@@ -97,7 +97,7 @@ class Result:
 
     def simpleLogChart(self):
         with open(self.__outputPath, 'w', newline='\n') as f:
-            writer = csv.writer(f, delimiter=';')
+            writer = csv.writer(f, delimiter=',')
             # for value in self.__chart.getConverted():
             #     writer.writerow(value)
             writer.writerow(["DATE", "BALANCE USD"])

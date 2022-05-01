@@ -73,6 +73,7 @@ def log():
 
 
 def present():
+
     cv.imshow("Image:", img)
     cv.waitKey(0)
 
