@@ -21,8 +21,8 @@ class LogAxis:
     originHeight = 72  # vertical distance from y=height to x-axis. must be negated (-72 = 72 from bottom)
     originGrayVal = 178  # grayscale value for the origin pixel
 
-    def __init__(self, img_path):
-        self.__img = cv2.imread(img_path)
+    def __init__(self, img):
+        self.__img = img
         self.__gray = cv2.cvtColor(self.__img, cv2.COLOR_BGR2GRAY)
         self.__values = self.getYAxisValuesOffset()
         self.__valuesNoOffset = self.getYAxisValues()
