@@ -162,6 +162,10 @@ class LogAxis:
 
         return math.pow(10, logBefore + valueRelation)
 
+    def getValueOfGraphPosition(self, y_value):
+        convert_y_value = y_value + self.__values[0]
+        self.getValueOfPosition(convert_y_value)
+
 
 def getCroppedImage(image, x_starter, x_end, y_starter, y_end):
     return image[y_starter:y_end, x_starter:x_end]
@@ -198,4 +202,4 @@ if __name__ == "__main__":
                 imgPath = os.path.join(root, filename)
                 print(imgPath)
                 axis = LogAxis(imgPath)
-                print(axis.getValueOfPosition(250))
+                print(axis.getValueOfPosition(0))
