@@ -63,7 +63,7 @@ def getPointArrayOnFunction(occ, x_point1, x_point2, y_point1, y_point2):
 def retrieveTheBluestValueFromColumn(img_col):
     closestIndexes = []
     for index in range(len(img_col)):
-        vicinity = sum(get_color_proximity(
+        vicinity = sum(getColorProximity(
             BLUE, img_col[index]))  # color irrelevant
         if vicinity < 10:
             closestIndexes.append(index)

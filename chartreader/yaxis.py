@@ -4,7 +4,7 @@ import pytesseract
 from pytesseract import Output
 
 # THANKS WINDOWS
-pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract'
+# pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract'
 
 
 class LogAxis:
