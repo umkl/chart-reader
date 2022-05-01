@@ -16,7 +16,8 @@ class Result:
 
         self.__dateMapped = []  # array consisting of: key: pixelValX - value: date
         self.__logMapped = []  # array consisting of: key: pixelValY - value: log
-        self.__fullMapped = []  # chart pixelwerte - abgezogen pixelwerte - auf dateaxis und logaxis gemapped
+        # chart pixelwerte - abgezogen pixelwerte - auf dateaxis und logaxis gemapped
+        self.__fullMapped = []
 
     # def mapOlles(self):
     #     for index, value in self.__dateAxis.values:
@@ -32,29 +33,49 @@ class Result:
 
         for index, valuePair in self.__chart.coordinates:
             try:
-                self.__dateMapped.append([self.__dateAxis.values[index - chart_offset][1], valuePair])
+                self.__dateMapped.append(
+                    [self.__dateAxis.values[index - chart_offset][1], valuePair])
             except IndexError:
-                self.__dateMapped.append([self.__dateAxis.values[index - chart_offset][1], 0])
+                self.__dateMapped.append(
+                    [self.__dateAxis.values[index - chart_offset][1], 0])
 
     def mapLogValues(self):
-        for index, valuePair in self.__chart.coordinates:
+        for xValue, yValue in self.__chart.coordinates:
             try:
-                self.__logMapped.append([valuePair,self.__logAxis.values[index - chart_offset][1]])
+                self.__logMapped.append(
+                    [xValue, self.__logAxis.getFromGraphPosition(yValue)])
             except IndexError:
-                self.__logMapped.append([0, self.__logAxis.values[index - chart_offset][1]])
+                self.__logMapped.append([xValue, 0])
+                
+    def mapLogValuesEasy(self):
+        for index, value in self.__dateMapped:
+            try:
+                self.__fullMapped.append(
+                    [index, self.__logAxis.getFromGraphPosition(value)])
+            except IndexError:
+                self.__fullMapped.append([index, 0])
+        #     self.__fullMapped.append(
+        #         (index, math.pow(10, ((756 + value) / 255))))
+
+        # for xValue, yValue in self.__chart.date:
+        #     try:
+        #         self.__logMapped.append(
+        #             [xValue, self.__logAxis.getFromGraphPosition(yValue)])
+        #     except IndexError:
+        #         self.__logMapped.append([xValue, 0])
 
     def logTest(self):
-         print(self.__chart.coordinates[0][0])
-         for i, v in self.__chart.coordinates:
-            if i == 0 or i == len(self.__chart.coordinates)-1:
-                print("index",i,"value ",v)    
-            
-             
+        yval = self.__chart.coordinates[1][1]
+        print(self.__logAxis.getFromGraphPosition(yval))
+        # for i, v in self.__chart.coordinates:
+        #     if i == 0 or i == len(self.__chart.coordinates)-1:
+        #         print("index", i, "value ", v)
 
-    def mapM(self):
+    def mapM(self):  # mapping the values according to input/1.png manually
         # 10^((756+y)/255)
         for index, value in self.__dateMapped:
-            self.__fullMapped.append((index, math.pow(10, ((756 + value) / 255))))
+            self.__fullMapped.append(
+                (index, math.pow(10, ((756 + value) / 255))))
 
             # def mapLogValue(self):
 
@@ -68,6 +89,11 @@ class Result:
         #     print(self.__dateAxis.values[index])
         #     # print("value: ",value, " mapped: ", self.__dateMapped[index])
         #     # self.__dateMapped[index] = value
+    def createFullMapped(self):
+        for xValue, yValue in self.__chart.coordinates:
+            dateval = self.__dateMapped[xValue]
+            self.__fullMapped.append(
+                (self.__dateMapped[xValue], self.__logMapped[xValue][1]))
 
     def simpleLogChart(self):
         with open(self.__outputPath, 'w', newline='\n') as f:
