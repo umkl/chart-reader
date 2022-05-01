@@ -19,7 +19,7 @@ from result import *
 
 def main():
     if 2 > len(sys.argv) < 2:
-        print("USAGE 'python main.py {InputFilePath} {OutputFilePath}'")
+        print("USAGE 'chartreader {InputFilePath} {OutputFilePath}'")
         return
 
     image = getImage(sys.argv[1])
