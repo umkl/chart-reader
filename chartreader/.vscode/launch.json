@@ -9,7 +9,7 @@
         "type": "python",
         "request": "launch",
         "program": "main.py",
-        "args": ["./input/1.png", "./output/1.csv"],
+        "args": ["./input/Beispiele-2/Run 9/00.0-08.0-57.0-35.0-100.0-40.0-01.0-08.0-06.0-NONE.png", "./output/3.csv"],
         "console": "integratedTerminal"
       }
     ]

@@ -105,6 +105,7 @@ class Chart:
     def definePixelCoordinates(self, img):
         for column in range(CHARTSTARTX, CHARTENDX):
             try:
+                secolumn = img[:, column]
                 yCoordinate = self.retrieveTheBluestValueFromColumn(
                     img[:, column])
             except ZeroDivisionError:
