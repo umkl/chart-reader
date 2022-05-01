@@ -126,21 +126,28 @@ class Chart:
     def definePixelCoordinates(self, img):
         for column in range(self.chartStartValue, self.chartEndValue):
             try:
-                secolumn = img[:, column]
-                yCoordinate = self.retrieveTheBluestValueFromColumn(
-                    img[:, column])
+                if(column != CHARTSTARTX):
+                    xCoordinate = self.retrieveTheBluestValueFromColumn(img[:,column],previousCoordinate)    
+                else:
+                    xCoordinate = self.retrieveTheBluestValueFromColumn(img[:,column],None)
+                previousCoordinate = xCoordinate
+                self.pixelCoordinates.append([xCoordinate, column])
             except ZeroDivisionError:
                 yCoordinate = 0
-            self.pixelCoordinates.append([column, yCoordinate])
+            
 
-    def retrieveTheBluestValueFromColumn(self, imgCol):
+    def retrieveTheBluestValueFromColumn(self, imgCol, previousCoordinate):
         closestIndexes = []
         for index in range(len(imgCol)):
-            vicinity = sum(getColorProximity(
-                BLUE, imgCol[index]))  # color irrelevant
-            if (vicinity < 10):
-                # print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
-                closestIndexes.append(index)
+            vicinity = sum(getColorProximity(BLUE,imgCol[index]))#color irrelevant
+            if (vicinity < 10):#
+                closestIndexes.append(index) # print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
+        avgCooridnate = round(sum(closestIndexes)/len(closestIndexes))
+        if(previousCoordinate != None):
+            if(previousCoordinate > avgCooridnate):
+                return closestIndexes[0]
+            else: 
+                return closestIndexes[len(closestIndexes)-1]
         return round(sum(closestIndexes)/len(closestIndexes))
 
     def getPixelValuesFrag(self, occ):
