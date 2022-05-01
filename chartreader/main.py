@@ -22,8 +22,6 @@ def init(image, output_path):
     dateAxis = DateAxis(image)
     logAxis = LogAxis(image)
 
-    # combining all data from all 3 sections(chart, dateaxis, logaxis)
-    # -> logging to csv
     result = Result(chart, dateAxis, logAxis, output_path)
     return result
 

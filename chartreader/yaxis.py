@@ -3,9 +3,6 @@ import cv2
 import pytesseract
 from pytesseract import Output
 
-# THANKS WINDOWS
-# pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract'
-
 
 class LogAxis:
     """
@@ -16,9 +13,8 @@ class LogAxis:
         valuesNoOffset {[number, number]} -- list for log-values on each row/y-axis or preciser with no Offset (according to pixel values on image)
     """
 
-    # vertical distance from y=height to x-axis. must be negated (-72 = 72 from bottom)
     originHeight = 72
-    originGrayVal = 178  # grayscale value for the origin pixel
+    originGrayVal = 178
 
     def __init__(self, img):
         self.__img = img
@@ -64,8 +60,6 @@ class LogAxis:
 
         axis_end_y = -1
         for i in range(height - self.originHeight, 0, -1):
-            # Spalte von da y-Achse wird von unten noch oben durch gonga (Werte umdraht weil links oben = 0/0)
-            # Wonn d Achse aufhead, oiso da Grauwert s erste moi weiß is
             if self.__gray[i, origin_x_pos] == 255:
                 axis_end_y = i + 1
                 break
@@ -74,7 +68,7 @@ class LogAxis:
 
         return axis_values
 
-    def getYAxisValues(self):  # relative to origin height (0 in result = -72 in image)
+    def getYAxisValues(self):
         values = self.getYAxisValuesOffset()
 
         for i in values:
@@ -113,15 +107,16 @@ class LogAxis:
         resize_time = 4
         y_axis_x_pos = self.getOriginXPos()
 
-        # Y-Value at X-Axis is 0
         values_unit_steps = {self.__values[0]: 0}
 
         for unit_step in self.__unitSteps:
-            img = getCroppedImage(self.__img, x_starter=0, x_end=y_axis_x_pos,
-                                  y_starter=unit_step - 8, y_end=unit_step + 8)
-            img = cv2.resize(img, None, fx=resize_time,
-                             fy=resize_time, interpolation=cv2.INTER_CUBIC)
-            result = pytesseract.image_to_data(img, config='-c tessedit_char_whitelist=10.',
+            cropped_img = getCroppedImage(self.__img, x_starter=0, x_end=y_axis_x_pos,
+                                          y_starter=unit_step - 8, y_end=unit_step + 8)
+
+            resized_image = cv2.resize(cropped_img, None, fx=resize_time,
+                                       fy=resize_time, interpolation=cv2.INTER_CUBIC)
+
+            result = pytesseract.image_to_data(resized_image, config='-c tessedit_char_whitelist=10.',
                                                output_type=Output.DICT)
 
             for i in range(0, len(result["text"])):
@@ -144,7 +139,6 @@ class LogAxis:
         y_value_converted = (y_value - self.__values[0]) * -1
         return self.getValueOfPosition(y_value_converted)
 
-    # Calculate value from y position with offset
     def getValueOfPosition(self, y_value):
         unitStepBefore = self.__unitSteps[0]
         unitStepAfter = 0

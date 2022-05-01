@@ -40,13 +40,9 @@ class DateAxis:
 
     valuesNoOffset = property(fget=getValuesNoOffset, fset=setValuesNoOffset, fdel=delValuesNoOffset, doc=None)
 
-    # Y-Offset always the same => Hardcode
     yStarterOffset = -72
-    # startDate always the same => Hardcode
     startDateTime = datetime(2018, 1, 1, 23, 0, 0)
-    # endDate always the same => Hardcode
     endDateTime = datetime(2021, 2, 1, 6, 0, 0)
-    # offset before chart starts
     chart_offset = 19
 
     def initValues(self):
