@@ -66,7 +66,7 @@ class Result:
     def simpleLogChart(self):
         os.makedirs(os.path.dirname(self.__outputPath), exist_ok=True)
         with open(self.__outputPath, 'w', newline='\n') as f:
-            writer = csv.writer(f, delimiter=',')
+            writer = csv.writer(f, delimiter=';')
             writer.writerow(["DATE", "BALANCE USD"])
             for index, value in self.__fullMapped:
 
