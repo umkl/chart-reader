@@ -1,10 +1,19 @@
-# Chartreader in Python using OpenCV
+# ChartReader using OpenCV-Python
+
+## Requirements
+* Python
+* OpenCV
+* Pytesseract
+* Numpy
+
+On Windows: Tesseract-OCR installed on your machine. Same requirements are required for  
+the Frontend project ([Chart-Reader Frontend](https://github.com/EinboeckFranz/chartreader_frontend))
 
 ## objective
 Images consisting charts with the same pixel-layout but different dimensions must be converted into csv-data.
 
 ## process
-Images are supplied by the input folder. These are converted by opencv into rgb-pixel-values. 
+Images are supplied by the input (inside docs) folder. These are converted by opencv into rgb-pixel-values. 
 
 ## project-structure
 
@@ -19,9 +28,3 @@ This class is used to read the y-axis and converting the data into a coordinate-
 
 ### The dateAxis class
 This class is used to read the x-axis and converting the data into a coordinate-date-map considering an offset.
-
-## packaging
-WIP
-
-## Frontend
-[Chart-Reader Frontend](https://github.com/EinboeckFranz/chartreader_frontend)

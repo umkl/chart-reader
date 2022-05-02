@@ -6,7 +6,7 @@ import pytesseract
 from pytesseract import Output
 
 # THANKS WINDOWS
-# pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract'
+pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract'
 
 
 class LogAxis:
@@ -175,37 +175,3 @@ class LogAxis:
 
 def getCroppedImage(image, x_starter, x_end, y_starter, y_end):
     return image[y_starter:y_end, x_starter:x_end]
-
-
-# 200 von xachse
-# 255 * log()
-# 255*log(wert)=y
-# wert= 10^((1000+y)/255)
-# wert = 10^((756+y)/255)
-# wert = 10^((offset from bottom+y)/pixelheightofonecolumn)
-
-# 0 = 648
-# 1 = 639
-# 2 = 384
-# d = 264
-# 9
-
-# x = 100
-
-
-# look at origin pixel to determine whether it is actually the origin
-# we cannot expect the origin to be on the same x-coordinate, due to values of varying lengths on the y-axis' legend
-
-# originYPos = -72. pixel von links unten
-# originHexVal = '#b0b0b0'
-
-
-# hobs do eine do, damits nd beim import ausgführt wird
-if __name__ == "__main__":
-    for root, dirs, files in os.walk('../docs/Beispiele'):
-        for filename in files:
-            if filename.endswith('.png'):
-                imgPath = os.path.join(root, filename)
-                print(imgPath)
-                axis = LogAxis(imgPath)
-                print(axis.getValueOfPosition(250))

@@ -52,23 +52,23 @@ class DateAxis:
 
     def initValues(self):
         days_between = (self.endDateTime - self.startDateTime).days
-        graph_starter_value = self.getXStarterValue(self.__imgInGrayscale)
-        graph_end_value = self.getXEndValue(self.__imgInGrayscale, self.getXStarterValue(self.__imgInGrayscale))
+        graph_starter_value = self.getXStarterValue()
+        graph_end_value = self.getXEndValue(self.getXStarterValue())
         pixel_per_day = getPixelsPerDay(graph_starter_value, graph_end_value, days_between)
 
         for i in range(graph_end_value - graph_starter_value):
             self.__values.append([i, i * pixel_per_day])
 
-    def getXStarterValue(self, image):
-        width = image.shape[1]
+    def getXStarterValue(self):
+        width = self.__imgInGrayscale.shape[1]
         for index in range(width):
-            if image[self.yStarterOffset, index] == 178:
+            if self.__imgInGrayscale[self.yStarterOffset, index] == 178:
                 return index + self.chart_offset
 
-    def getXEndValue(self, image, x_starter_value):
-        width = image.shape[1]
+    def getXEndValue(self, x_starter_value):
+        width = self.__imgInGrayscale.shape[1]
         for index in range(width)[x_starter_value:]:
-            if image[self.yStarterOffset, index] == 255:
+            if self.__imgInGrayscale[self.yStarterOffset, index] == 255:
                 return index - self.chart_offset - 1
 
 
