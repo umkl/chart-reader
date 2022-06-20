@@ -64,6 +64,17 @@ def getPointArrayOnFunction(occ, xPoint1, xPoint2, yPoint1, yPoint2):
     return points
 
 
+def retrieveTheBluestValueFromColumn(imgCol):
+    closestIndexes = []
+    for index in range(len(imgCol)):
+        vicinity = sum(getColorProximity(
+            BLUE, imgCol[index]))  # color irrelevant
+        if vicinity < 10:
+            # print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
+            closestIndexes.append(index)
+    return round(sum(closestIndexes)/len(closestIndexes))
+
+
 class Chart:
     """Class for the chart values
 
@@ -73,7 +84,6 @@ class Chart:
     """
 
     def __init__(self, img):
-        # self.__img = img
         self.__pixelCoordinates = []
         self.__coordinates = []
 
@@ -82,7 +92,6 @@ class Chart:
         # retriving pixel values by bluest value
         self.definePixelCoordinates(img)
         self.defineCoordinatesByPixelCoordinates(self.pixelCoordinates)
-        # self.chartEndValue
 
     def setcoordinates(self, coordinates):
         self.__coordinates = coordinates
@@ -109,7 +118,7 @@ class Chart:
         for columnIndex in range(0, len(img[0])):
             val = img[:, columnIndex]
             try:
-                bluest = self.retrieveTheBluestValueFromColumn(val)
+                bluest = retrieveTheBluestValueFromColumn(val)
                 return columnIndex
             except ZeroDivisionError:
                 continue
@@ -118,30 +127,15 @@ class Chart:
         for columnIndex in range(self.chartStartValue, len(img[0])):
             val = img[:, columnIndex]
             try:
-                bluest = self.retrieveTheBluestValueFromColumn(val)
+                bluest = retrieveTheBluestValueFromColumn(val)
                 continue
             except ZeroDivisionError:
                 return columnIndex
 
     def definePixelCoordinates(self, img):
         for column in range(self.chartStartValue, self.chartEndValue):
-            try:
-                secolumn = img[:, column]
-                yCoordinate = self.retrieveTheBluestValueFromColumn(
-                    img[:, column])
-            except ZeroDivisionError:
-                yCoordinate = 0
+            yCoordinate = retrieveTheBluestValueFromColumn(img[:, column])
             self.pixelCoordinates.append([column, yCoordinate])
-
-    def retrieveTheBluestValueFromColumn(self, imgCol):
-        closestIndexes = []
-        for index in range(len(imgCol)):
-            vicinity = sum(getColorProximity(
-                BLUE, imgCol[index]))  # color irrelevant
-            if (vicinity < 10):
-                # print("closest vicinity was: ", closestVicinity, closestIndex,getColorProximity(blue,imgCol[index]))
-                closestIndexes.append(index)
-        return round(sum(closestIndexes)/len(closestIndexes))
 
     def getPixelValuesFrag(self, occ):
         for itr in range(len(self.pixelCoordinates)):

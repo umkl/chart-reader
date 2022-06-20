@@ -131,8 +131,7 @@ class LogAxis:
                 if number.strip() != '':
                     if number == '1.00000':
                         number = '100000'
-                    if number.endswith('.'):
-                        number.rstrip('.')
+                    number = number.rstrip('.')
                     values_unit_steps[unit_step] = number
             try:
                 if values_unit_steps[unit_step]:
@@ -165,12 +164,14 @@ class LogAxis:
 
         valueRelation = 1 - yDiff / unitStepDiff
         valueBefore = float(self.__valuesUnitSteps.get(unitStepBefore))
+
         if valueBefore == 0:
-            logBefore = 0
+            valueAfter = float(self.__valuesUnitSteps.get(unitStepAfter))
+            log = math.log10(valueAfter)
+            return math.pow(10, log + valueRelation) / 10
         else:
             logBefore = math.log10(valueBefore)
-
-        return math.pow(10, logBefore + valueRelation)
+            return math.pow(10, logBefore + valueRelation)
 
 
 def getCroppedImage(image, x_starter, x_end, y_starter, y_end):
